@@ -16,7 +16,7 @@ subjid="sub-NDARXD907ZJL"   # HBN subject RBC ID
 subjid_2="sub-NDARLY030ZBG"
 
 qsiprep_version="0.14.2"
-
+fmriprep_version="20.2.3"
 # +++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -59,14 +59,28 @@ unzip -n ${filename} -d .     # `-n` means not to overwrite existing files - nee
 
 
 ## fMRIPrep output: # Q: ONLY SEE fmriprep-anat/, instead of fmriprep????
-ria_fmriprep="ria+file:///cbica/projects/RBC/production/${dataset}/fmriprep/output_ria#~data"
-foldername_mine="fmriprep_outputs"
+if [[ "${dataset}" == "HBN"   ]]; then
+    ria_fmriprep="ria+file:///cbica/projects/RBC/production/${dataset}/fmriprep-anat/output_ria#~data"
+else
+    ria_fmriprep="ria+file:///cbica/projects/RBC/production/${dataset}/fmriprep/output_ria#~data"
+fi
+foldername_mine="fmriprep-anat_outputs"
 # datalad clone:
 cd ..
-cmd="datalad clone ${ria_qsiprep} ${foldername_mine}" # there should be a clone in folder `fmriprep_outputs`
+cmd="datalad clone ${ria_fmriprep} ${foldername_mine}" # there should be a clone in folder `fmriprep-anat_outputs`
 echo $cmd
 
+
 # datalad get:
-cd ${foldername_mine}
-cmd="datalad get ???????????"
+cd ${foldername_mine}  # why have to cd into the folder???
+filename="${subjid}_freesurfer-${fmriprep_version}.zip"
+cmd="datalad get ${filename}"
 echo $cmd
+# copy it out:
+cp ${filename} ../
+cd ..
+ls -l
+# (optional) unzip:
+unzip -n ${filename} -d .     # `-n` means not to overwrite existing files - needed by the 2nd zipped file
+
+# datalad get - another subject: - repeat above steps!
