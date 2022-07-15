@@ -1,9 +1,4 @@
 ## NOTE ##
-# This is modified upon: TheWay/scripts/cubic/bootstrap-fmriprep-multises.sh
-
-# !!!! WHY NUMBER OF LINES ARE NOT CONSISTENT WITH THE ORIGINAL FILE? TRY DIRECTLY DOWNLOADING...
-
-## NOTE ##
 # This workflow is derived from the Datalad Handbook
 
 ## Ensure the environment is ready to bootstrap the analysis workspace
@@ -141,28 +136,35 @@ cat > code/participant_job.sh << "EOT"
 # Set up the correct conda environment
 source ${CONDA_PREFIX}/bin/activate base
 echo I\'m in $PWD using `which python`
+
 # fail whenever something is fishy, use -x to get verbose logfiles
 set -e -u -x
+
 # Set up the remotes and get the subject id from the call
 dssource="$1"
 pushgitremote="$2"
 subid="$3"
 sesid="$4"
+
 # change into the cluster-assigned temp directory. Not done by default in SGE
 cd ${CBICA_TMPDIR}
 # OR Run it on a shared network drive
 # cd /cbica/comp_space/$(basename $HOME)
+
 # Used for the branch names and the temp dir
 BRANCH="job-${JOB_ID}-${subid}-${sesid}"
 mkdir ${BRANCH}
 cd ${BRANCH}
+
 # get the analysis dataset, which includes the inputs as well
 # importantly, we do not clone from the lcoation that we want to push the
 # results to, in order to avoid too many jobs blocking access to
 # the same location and creating a throughput bottleneck
 datalad clone "${dssource}" ds
+
 # all following actions are performed in the context of the superdataset
 cd ds
+
 # in order to avoid accumulation temporary git-annex availability information
 # and to avoid a syncronization bottleneck by having to consolidate the
 # git-annex branch across jobs, we will only push the main tracking branch
@@ -172,18 +174,23 @@ cd ds
 # and we want to avoid progressive slowdown. Instead we only ever push
 # a unique branch per each job (subject AND process specific name)
 git remote add outputstore "$pushgitremote"
+
 # all results of this job will be put into a dedicated branch
 git checkout -b "${BRANCH}"
+
 # we pull down the input subject manually in order to discover relevant
 # files. We do this outside the recorded call, because on a potential
 # re-run we want to be able to do fine-grained recomputing of individual
 # outputs. The recorded calls will have specific paths that will enable
 # recomputation outside the scope of the original setup
 datalad get -n "inputs/data/${subid}"
+
 # Reomve all subjects we're not working on
 (cd inputs/data && rm -rf `find . -type d -name 'sub*' | grep -v $subid`)
+
 # ------------------------------------------------------------------------------
 # Do the run!
+
 datalad run \
     -i code/fmriprep_zip.sh \
     -i inputs/data/${subid}/${sesid}\
@@ -194,17 +201,21 @@ datalad run \
     -o ${subid}_${sesid}_freesurfer-20.2.3.zip \
     -m "fmriprep:20.2.3 ${subid} ${sesid}" \
     "bash ./code/fmriprep_zip.sh ${subid} ${sesid}"
+
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
 # and the output branch
 flock $DSLOCKFILE git push outputstore
+
 echo TMPDIR TO DELETE
 echo ${BRANCH}
+
 datalad uninstall -r --nocheck --if-dirty ignore inputs/data
 datalad drop -r . --nocheck
 git annex dead here
 cd ../..
 rm -rf $BRANCH
+
 echo SUCCESS
 # job handler should clean up workspace
 EOT
@@ -214,8 +225,10 @@ chmod +x code/participant_job.sh
 cat > code/fmriprep_zip.sh << "EOT"
 #!/bin/bash
 set -e -u -x
+
 subid="$1"
 sesid="$2"
+
 # Create a filter file that only allows this session
 filterfile=${PWD}/${sesid}_filter.json
 echo "{" > ${filterfile}
@@ -227,9 +240,11 @@ echo "'t2w': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'T2w'}," >> ${f
 echo "'t1w': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'T1w'}," >> ${filterfile}
 echo "'roi': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'roi'}" >> ${filterfile}
 echo "}" >> ${filterfile}
+
 # remove ses and get valid json
 sed -i "s/'/\"/g" ${filterfile}
 sed -i "s/ses-//g" ${filterfile}
+
 mkdir -p ${PWD}/.git/tmp/wdir
 singularity run --cleanenv -B ${PWD} \
     pennlinc-containers/.datalad/environments/fmriprep-20-2-3/image \
@@ -246,11 +261,13 @@ singularity run --cleanenv -B ${PWD} \
     --participant-label "$subid" \
     --force-bbr \
     --cifti-output 91k -v -v
+
 cd prep
 7z a ../${subid}_${sesid}_fmriprep-20.2.3.zip fmriprep
 7z a ../${subid}_${sesid}_freesurfer-20.2.3.zip freesurfer
 rm -rf prep .git/tmp/wkdir
 rm ${filterfile}
+
 EOT
 
 chmod +x code/fmriprep_zip.sh
@@ -275,21 +292,27 @@ echo "outputsource=${output_store}#$(datalad -f '{infos[dataset][id]}' wtf -S da
 echo "cd ${PROJECTROOT}" >> code/merge_outputs.sh
 
 cat >> code/merge_outputs.sh << "EOT"
+
 datalad clone ${outputsource} merge_ds
 cd merge_ds
 NBRANCHES=$(git branch -a | grep job- | sort | wc -l)
 echo "Found $NBRANCHES branches to merge"
+
 gitref=$(git show-ref master | cut -d ' ' -f1 | head -n 1)
+
 # query all branches for the most recent commit and check if it is identical.
 # Write all branch identifiers for jobs without outputs into a file.
 for i in $(git branch -a | grep job- | sort); do [ x"$(git show-ref $i \
   | cut -d ' ' -f1)" = x"${gitref}" ] && \
   echo $i; done | tee code/noresults.txt | wc -l
+
+
 for i in $(git branch -a | grep job- | sort); \
   do [ x"$(git show-ref $i  \
      | cut -d ' ' -f1)" != x"${gitref}" ] && \
      echo $i; \
 done | tee code/has_results.txt
+
 mkdir -p code/merge_batches
 num_branches=$(wc -l < code/has_results.txt)
 CHUNKSIZE=5000
@@ -308,22 +331,30 @@ do
     branches=$(sed -n "${startnum},${endnum}p;$(expr ${endnum} + 1)q" code/has_results.txt)
     echo ${branches} > ${batch_file}
     git merge -m "fmriprep results batch ${chunknum}/${num_chunks}" $(cat ${batch_file})
+
 done
+
 # Push the merge back
 git push
+
 # Get the file availability info
 git annex fsck --fast -f output-storage
+
 # This should not print anything
 MISSING=$(git annex find --not --in output-storage)
+
 if [[ ! -z "$MISSING" ]]
 then
     echo Unable to find data for $MISSING
     exit 1
 fi
+
 # stop tracking this branch
 git annex dead here
+
 datalad push --data nothing
 echo SUCCESS
+
 EOT
 
 
