@@ -3,15 +3,24 @@
 # This is to apply The Way upon EF dataset. 
 # Before doing this, make sure that DataLad + datalad_container has been installed.
 
-# +++++++++++++++++++++++++++++++++++++
-folder_BIDS="XXXXXXX" 
-bidsapp="XXXXXXX"    # e.g., qsiprep
-bidsapp_version_dot="XXXXXX"    # e.g., 0.14.2
-bidsapp_version_dash="XXXX"     # e.g., 0-14-2
-docker_link="XXXXXX"  # e.g., docker://pennbbl/qsiprep:0.14.2
+# ++++++++++++++++++++++++++++++++++++
+# STABLE PARAMETERS
+fmriprep_version_dot="21.0.2"
+fmriprep_version_dash="21-0-2"
+fmriprep_docker_path="nipreps/fmriprep:${fmriprep_version_dot}"
+# ++++++++++++++++++++++++++++++++++++
 
-folder_sif="XXXXXX"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
-msg_container="XXXX"   # e.g., this is qsiprep container
+# +++++++++++++++++++++++++++++++++++++
+# CHANGE FOR EACH RUN
+folder_BIDS="XXXXXXX" 
+bidsapp="fmriprep"    # e.g., qsiprep
+bidsapp_version_dot=${fmriprep_version_dot}    # e.g., 0.14.2
+bidsapp_version_dash=${fmriprep_version_dash}     # e.g., 0-14-2
+docker_path=${fmriprep_docker_path}   # pennbbl/qsiprep:0.14.2
+docker_link="docker://${fmriprep_docker_path}"  # e.g., docker://pennbbl/qsiprep:0.14.2
+
+folder_sif="/cbica/projects/EFR01"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
+msg_container="this is ${bidsapp} container"   # e.g., this is qsiprep container
 # +++++++++++++++++++++++++++++++++++++
 
 cmd="conda activate mydatalad"
@@ -30,6 +39,10 @@ cmd="datalad save -m 'add input data'"
 
 # Step 2. Prepare containers
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-your-containers
+# Step 2.0 Pull docker image:
+cd ${folder_sif}
+cmd="docker pull ${docker_path}"
+
 # Step 2.1 Build singularity
 cmd="singularity build ${bidsapp}-${bidsapp_version_dot}.sif ${docker_link}"
 
