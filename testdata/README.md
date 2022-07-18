@@ -18,3 +18,9 @@
         * freesurfer  # fmriprep anat-only
             * sub-1/
             * sub-2/
+
+# Practice for learning The Way
+
+* where: /cbica/projects/RBC/chenying_practice
+* which dataset: NKI exemplar
+* RBC subject ID: the first 30 participants in NKI exemplar
