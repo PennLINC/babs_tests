@@ -4,6 +4,15 @@
 
 # This workflow is derived from the Datalad Handbook
 
+# +++++++++++++++++++++++++++++++++++++++++++++++
+BIDSINPUT=$1  #  /full/path/to/BIDS - this is a datalad dataset of BIDS inputs
+CONTAINERDS=$2   # /full/path/to/qsiprep-container - this is a datalad dataset of container
+
+PROJECTROOT=${PWD}/fmriprep-multises
+# +++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
 ## Ensure the environment is ready to bootstrap the analysis workspace
 # Check that we have conda installed
 #conda activate
@@ -26,7 +35,6 @@ set -e -u
 
 
 ## Set up the directory that will contain the necessary directories
-PROJECTROOT=${PWD}/fmriprep-multises
 if [[ -d ${PROJECTROOT} ]]
 then
     echo ${PROJECTROOT} already exists
@@ -41,7 +49,7 @@ fi
 
 
 ## Check the BIDS input
-BIDSINPUT=$1
+
 if [[ -z ${BIDSINPUT} ]]
 then
     echo "Required argument is an identifier of the BIDS source"
@@ -107,7 +115,6 @@ fi
 cd ${PROJECTROOT}
 
 # Clone the containers dataset. If specified on the command, use that path
-CONTAINERDS=$2
 if [[ ! -z "${CONTAINERDS}" ]]; then
     datalad clone ${CONTAINERDS} pennlinc-containers
 else
@@ -341,7 +348,7 @@ done
 git push
 
 # Get the file availability info
-git annex fsck --fast -f output-storage
+git annex fsck --fast -f output-storage    # CHENYING: WHERE IS THE `output-storage`????
 
 # This should not print anything
 MISSING=$(git annex find --not --in output-storage)
