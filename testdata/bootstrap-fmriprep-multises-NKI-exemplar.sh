@@ -1,5 +1,3 @@
-## NOTE ##
-
 # This is modified upon: TheWay/scripts/cubic/bootstrap-fmriprep-multises.sh
 
 # This workflow is derived from the Datalad Handbook
@@ -80,14 +78,24 @@ output_store="ria+file://${PROJECTROOT}/output_ria"
 
 # Create a source dataset with all analysis components as an analysis access
 # point.
-datalad create -c yoda analysis
+if [[ -d "analysis" ]]; then
+    echo "analysis/ folder exists, not to re-create" # TODO: check if it's a datalad dataset!
+else
+    datalad create -c yoda analysis
+fi
+
 cd analysis
 
 # create dedicated input and output locations. Results will be pushed into the
 # output sibling and the analysis will start with a clone from the input sibling.
-datalad create-sibling-ria -s output "${output_store}"
+if [[ -d "../output_ria"  ]]; then
+    echo "output_store: ${output_store} exists, not to re-create"   # TODO: add check if it's a datalad dataset! - Chenying
+else
+    datalad create-sibling-ria -s output "${output_store}"  --new-store-ok    # ADDED BY CHENYING 2022-7-19, OTHERWISE ERROR
+fi
 pushremote=$(git remote get-url --push output)
-datalad create-sibling-ria -s input --storage-sibling off "${input_store}"
+datalad create-sibling-ria -s input --storage-sibling off "${input_store}" --new-store-ok
+# ADDED BY CHENYING 2022-7-19, OTHERWISE ERROR
 
 # register the input dataset
 if [[ "${BIDS_INPUT_METHOD}" == "clone" ]]
