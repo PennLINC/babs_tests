@@ -17,7 +17,7 @@ fmriprep_docker_path="nipreps/fmriprep:${fmriprep_version_dot}"
 
 # +++++++++++++++++++++++++++++++++++++
 # CHANGE FOR EACH RUN
-folder_BIDS="${folder_main}/NKI_exemplar_bids" 
+folder_BIDS="/cbica/projects/RBC/RBC_EXEMPLARS/NKI" 
 bidsapp="fmriprep"    # e.g., qsiprep
 bidsapp_version_dot=${fmriprep_version_dot}    # e.g., 0.14.2
 bidsapp_version_dash=${fmriprep_version_dash}     # e.g., 0-14-2
@@ -31,23 +31,24 @@ folder_container="${folder_main}/software/${bidsapp}-container"    # the datalad
 
 cmd="conda activate mydatalad"
 
-# Step 1. Create a datalad dataset of the raw BIDS data:
-# ref: http://handbook.datalad.org/en/latest/beyond_basics/101-164-dataladdening.html
+# SKIPPING STEP 1 HERE - `RBC_EXEMPLAR` is already a datalad dataset
+# # Step 1. Create a datalad dataset of the raw BIDS data:
+# # ref: http://handbook.datalad.org/en/latest/beyond_basics/101-164-dataladdening.html
 
-# make a copy of the original input BIDS data:
-folder_orig="/cbica/projects/RBC/RBC_EXEMPLARS/NKI"    # original BIDS data
-cd chenying_practice
-cmd="cp -rl ${folder_orig} ./"   # there is no symlink anymore, but just real data
-mv NKI NKI_exemplar_bids   # rename the folder
+# # make a copy of the original input BIDS data:
+# folder_orig="/cbica/projects/RBC/RBC_EXEMPLARS/NKI"    # original BIDS data
+# cd chenying_practice
+# cmd="cp -rl ${folder_orig} ./"   # there is no symlink anymore, but just real data <== SEEMS THIS IS NOT A RECOMMENDED WAY.....
+# mv NKI NKI_exemplar_bids   # rename the folder
 
-# BEST TO MAKE A COPY OF THE ORIGINAL DATA.....
+# # BEST TO MAKE A COPY OF THE ORIGINAL DATA.....
 
-cd $folder_BIDS
-cmd='datalad create -d . --force -D "raw BIDS data"'  # ref: https://pennlinc.github.io/docs/TheWay/CuratingBIDSonDisk/#testing-pipelines-on-example-subjects
-# "--force": enforces dataset creation in non-empty dir
-# "-D": description
+# cd $folder_BIDS
+# cmd='datalad create -d . --force -D "raw BIDS data"'  # ref: https://pennlinc.github.io/docs/TheWay/CuratingBIDSonDisk/#testing-pipelines-on-example-subjects
+# # "--force": enforces dataset creation in non-empty dir
+# # "-D": description
 
-cmd="datalad save -m 'add input data'"
+# cmd="datalad save -m 'add input data'"
 
 # Step 2. Prepare containers
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-your-containers
