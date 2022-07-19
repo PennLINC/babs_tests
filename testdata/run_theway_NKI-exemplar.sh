@@ -75,3 +75,16 @@ cmd="rm ${fn_sif_orig}"
 
 # Step 3. Preparing the analysis dataset
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-the-analysis-dataset
+
+cd ${folder_main}
+cp babs_tests/testdata/bootstrap-fmriprep-multises-NKI-exemplar.sh ./   # copy the bootstrap script
+
+# Run the bootstrap script:
+cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EXEMPLARS/NKI/ ${folder_main}/software/${bidsapp}-container"
+
+
+# TODO:
+#- copy the updated bootstrap.sh back!!!
+# BEFORE RUNNING MANY PARTICIPANTS:
+# `participant_job.sh`: change back to: cd ${CBICA_TMPDIR}
+# delete the last line (already run) from `qsub_calls.sh`
