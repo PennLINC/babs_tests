@@ -81,7 +81,7 @@ output_store="ria+file://${PROJECTROOT}/output_ria"
 if [[ -d "analysis" ]]; then
     echo "analysis/ folder exists, not to re-create" # TODO: check if it's a datalad dataset!
 else
-    datalad create -c yoda analysis
+    datalad create -c yoda analysis    # note: "yoda": everything in the code/ directory to be tracked by Git, not git-annex
 fi
 
 cd analysis
@@ -92,6 +92,7 @@ if [[ -d "../output_ria"  ]]; then
     echo "output_store: ${output_store} exists, not to re-create"   # TODO: add check if it's a datalad dataset! - Chenying
 else
     datalad create-sibling-ria -s output "${output_store}"  --new-store-ok    # ADDED BY CHENYING 2022-7-19, OTHERWISE ERROR
+        # because this is creating ria store, datalad also creates git annex storage as "<this name>-storage" e.g., output-storage
 fi
 pushremote=$(git remote get-url --push output)
 datalad create-sibling-ria -s input --storage-sibling off "${input_store}" --new-store-ok

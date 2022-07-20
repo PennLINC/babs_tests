@@ -82,9 +82,46 @@ cp babs_tests/testdata/bootstrap-fmriprep-multises-NKI-exemplar.sh ./   # copy t
 # Run the bootstrap script:
 cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EXEMPLARS/NKI/ ${folder_main}/software/${bidsapp}-container"
 
+# Step 4. Run and debug
+# Now, follow instructions on pennlinc.github.io to submit the jobs.
+
+# There are three ways to run the jobs:
+# 1. auto + at ${CUBIC_TMPDIR} (tmp dir at the compute node): directly submit `qsub_calls.sh`
+    # when the job is running, cannot check the temporary data it generates
+# 2. auto + at `comp_space`: change the command in `participant_job.sh`--> `datalad save` --> `datald push` to both input & output, before submitting the `qsub_calls.sh`
+    # the ephemeral workspace will be at: /cbica/comp_space/<project name>
+    # this is good for checking the temporary data while the job is running
+    # after the job is successfully finished, the folder will be deleted.
+# 3. manual/interactive + at `comp_space`: 1) change to `comp_space` as in #2; run the `participant_job.sh` line by line manually to have an idea what's going on at each step
+    # make sure to skip `set -e -u -x` in order to not get logged out...
+
+# WHAT TO CHECK after the jobs are finished (no jobid in `qstat`):
+# 1. check if branches are successfully created:
+    # cd to output_ria/<3 char>/<full char>
+    # $ git branch -a
+# 2. If not all branches are there, you may want to check the log files:
+    # cd to analysis/logs
+    # then check out the failed jobid's *.e* and *.o*
+    # If it's due to missing data for the container, better to remove the job from `qsub_calls.sh`
+# 3. If the job failed without error message (probably got killed):
+    # on cubic: check out $ qacct -j <jobid> 
+    # on cubic: `sge_errors` > my_errors.csv    
+    # otherwise, submit a ticket on cubic....
+
+
+# STATUS:
+# first 30 jobs:
+    # n=6:  removed from `qsub_jobs_full.sh`
+    # n=24: stopped but without error message?
+# last 1 job: success, finished on `comp_space`
+# 2nd from last: I played, did not run `fmriprep`;
 
 # TODO:
-#- copy the updated bootstrap.sh back!!!
+    # change `where` in `participant_job.sh`; also modify cubic request too
+    # change `qsub_jobs.sh` for the list of jobs to submit
+    # submit n=5, but on `comp_space`
+    # before running, make sure to `datalad save` and `datalad push` to both input and output ria!
+
 # BEFORE RUNNING MANY PARTICIPANTS:
 # `participant_job.sh`: change back to: cd ${CBICA_TMPDIR}
 # delete the last line (already run) from `qsub_calls.sh`
