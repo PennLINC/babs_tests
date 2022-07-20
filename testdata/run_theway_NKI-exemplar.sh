@@ -92,6 +92,7 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
     # the ephemeral workspace will be at: /cbica/comp_space/<project name>
     # this is good for checking the temporary data while the job is running
     # after the job is successfully finished, the folder will be deleted.
+    # However, should not submit a lot of jobs running here! will blow up the space!
 # 3. manual/interactive + at `comp_space`: 1) change to `comp_space` as in #2; run the `participant_job.sh` line by line manually to have an idea what's going on at each step
     # make sure to skip `set -e -u -x` in order to not get logged out...
 
@@ -125,3 +126,11 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
 # BEFORE RUNNING MANY PARTICIPANTS:
 # `participant_job.sh`: change back to: cd ${CBICA_TMPDIR}
 # delete the last line (already run) from `qsub_calls.sh`
+
+
+# Step 5. Merge outputs
+
+
+# Step 6. Audit your runs
+# This is to check each subj-ses for successful run output, and/or collect some information from it.
+
