@@ -116,6 +116,7 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
     # n=24: stopped but without error message?
 # last 1 job: success, finished on `comp_space`
 # 2nd from last: I played, did not run `fmriprep`;
+# 3rd-8st from the last: except one job without data, all done - 2022-7-21
 
 # TODO:
     # change `where` in `participant_job.sh`; also modify cubic request too
@@ -129,7 +130,11 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
 
 
 # Step 5. Merge outputs
-
+# Before running `merge_outputs.sh`, check if you want to delete any branches (a job's outputs) first. 
+    # go to `output_ria/<3 char>/<long char>`
+    # $ git branch -a
+    # if there is a branch you want to delete:
+    # $ git branch -d <branch name>
 
 # Step 6. Audit your runs
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
