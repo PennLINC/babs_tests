@@ -12,9 +12,9 @@ cd NKI_exemplars
 datalad clone -d . /cbica/projects/RBC/RBC_EXEMPLARS/NKI/ raw_data
 
 cd raw_data
-datalad get -r ${subjid}/
+datalad get -n ${subjid}/
 
-# HOWEVER: not needed to get?????
+# HOWEVER: why the files in this `subjid` still has symlinks, and after copying out, the files are still symlinks??
 # ls -lh ${subjid}
 
 # TRY THE OTHER WAY AROUND: FROM INPUT_RIA????
