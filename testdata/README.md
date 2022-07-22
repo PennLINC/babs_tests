@@ -1,5 +1,15 @@
 # Create test data for BABS
 
+* where: /cbica/projects/RBC/chenying_practice/data_for_babs/NKI/raw_bids_exemplars
+* which dataset: NKI
+* NKI IDs: see [prep_test_data.sh](prep_test_data.sh)
+* In this folder:
+    * this is a DataLad dataset
+    * outputs/: all images' (*.nii.gz) values have been zero-out
+
+
+
+
 * where: /cbica/projects/RBC/temp_chenying/data_for_babs
 * which dataset: HBN
 * RBC subject ID:
