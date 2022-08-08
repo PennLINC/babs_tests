@@ -119,10 +119,11 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
 # 3rd-8st from the last: except one job without data, all done - 2022-7-21
 
 # TODO:
-    # change `where` in `participant_job.sh`; also modify cubic request too
+    # change where to run in `participant_job.sh`
     # change `qsub_jobs.sh` for the list of jobs to submit
-    # submit n=5, but on `comp_space`
+    # submit the subjects for circle ci tests, but on `comp_space`
     # before running, make sure to `datalad save` and `datalad push` to both input and output ria!
+    # however caused conflict in output-ria; wanted to git revert analysis folder but always failed?????? `git revert --no-edit <commitSHA> -n HEAD`
 
 # BEFORE RUNNING MANY PARTICIPANTS:
 # `participant_job.sh`: change back to: cd ${CBICA_TMPDIR}

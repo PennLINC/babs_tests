@@ -11,10 +11,8 @@ my_foldername="raw_bids_exemplars"
     # has anat/T1w
     # has func/valid BOLD files
     # best to have dwi/valid DWI files
-subjid_1="sub-A00028352"
-subjid_2="sub-A00052165"
 
-subjid=${subjid_2}    # CHANGE HERE!
+subjid="XXXXXX"    # CHANGE HERE!
 # +++++++++++++++++++++++++++++++++++++++++++
 
 ## BELOW: ONLY DO IT ONCE:
