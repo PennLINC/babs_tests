@@ -140,3 +140,4 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
 # Step 6. Audit your runs
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
 
+# Done - 2022-08-08
