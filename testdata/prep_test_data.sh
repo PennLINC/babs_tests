@@ -86,6 +86,8 @@ cp -r ${bids_hashing}/* ${bids_datalad}
 cd ${bids_datalad}
 datalad save -m "add bids data"
 
+# The BIDS Apps' bootstraps can be run at the same time (QSIPrep, fMRIPrep; after fMRIPrep: XCP-D)
+
 # Step 2.2 Run fMRIPrep
 # Go to `run_theway_NKI-exemplar.sh`
 
