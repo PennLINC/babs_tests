@@ -1,14 +1,17 @@
 #!/bin/bash
 
-# This is to apply The Way upon NKI-exemplar dataset. 
+# This is to apply The Way upon NKI-exemplar dataset, to prepare CircleCI test data for BABS. 
 # This dataset includes cross-sectional + longitudinal participants.
 # Before doing this, make sure that DataLad + datalad_container has been installed.
+# Also, you have set up a DataLad dataset as input - see `prep_test_data.sh`.
 
 # Below is done on CUBIC RBC: chenying_practice/ folder
 
 # ++++++++++++++++++++++++++++++++++++
 # STABLE PARAMETERS
-folder_main="/cbica/projects/RBC/chenying_practice"
+folder_root="/cbica/projects/RBC/chenying_practice"
+folder_data4babs_NKI="${folder_root}/data_for_babs/NKI"
+folder_bids_input="${folder_data4babs_NKI}/data_hashedID_bids"   # raw BIDS data as input
 
 fmriprep_version_dot="20.2.3"
 fmriprep_version_dash="20-2-3"
@@ -16,7 +19,7 @@ fmriprep_docker_path="nipreps/fmriprep:${fmriprep_version_dot}"
 # ++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++
-# CHANGE FOR EACH RUN
+# CHANGE FOR EACH RUN:
 folder_BIDS="/cbica/projects/RBC/RBC_EXEMPLARS/NKI" 
 bidsapp="fmriprep"    # e.g., qsiprep
 bidsapp_version_dot=${fmriprep_version_dot}    # e.g., 0.14.2
@@ -24,35 +27,24 @@ bidsapp_version_dash=${fmriprep_version_dash}     # e.g., 0-14-2
 docker_path=${fmriprep_docker_path}   # pennbbl/qsiprep:0.14.2
 docker_link="docker://${fmriprep_docker_path}"  # e.g., docker://pennbbl/qsiprep:0.14.2
 
-folder_sif="${folder_main}/software"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
+folder_sif="${folder_root}/software"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
 msg_container="this is ${bidsapp} container"   # e.g., this is qsiprep container
-folder_container="${folder_main}/software/${bidsapp}-container"    # the datalad dataset of the container
+folder_container="${folder_root}/software/${bidsapp}-container"    # the datalad dataset of the container
 # +++++++++++++++++++++++++++++++++++++
 
-cmd="conda activate mydatalad"
+# Hint: Run each `cmd` by $cmd. We did not include here just in case you run this bash file
 
-# SKIPPING STEP 1 HERE - `RBC_EXEMPLAR` is already a datalad dataset
-# # Step 1. Create a datalad dataset of the raw BIDS data:
-# # ref: http://handbook.datalad.org/en/latest/beyond_basics/101-164-dataladdening.html
+cmd="conda activate mydatalad_chenying"
 
-# # make a copy of the original input BIDS data:
-# folder_orig="/cbica/projects/RBC/RBC_EXEMPLARS/NKI"    # original BIDS data
-# cd chenying_practice
-# cmd="cp -rl ${folder_orig} ./"   # there is no symlink anymore, but just real data <== SEEMS THIS IS NOT A RECOMMENDED WAY.....
-# mv NKI NKI_exemplar_bids   # rename the folder
+# =====================================================================
+# Step 1. Prepare input datalad dataset - see `prep_test_data.sh`
+# =====================================================================
 
-# # BEST TO MAKE A COPY OF THE ORIGINAL DATA.....
-
-# cd $folder_BIDS
-# cmd='datalad create -d . --force -D "raw BIDS data"'  # ref: https://pennlinc.github.io/docs/TheWay/CuratingBIDSonDisk/#testing-pipelines-on-example-subjects
-# # "--force": enforces dataset creation in non-empty dir
-# # "-D": description
-
-# cmd="datalad save -m 'add input data'"
-
+# =====================================================================
 # Step 2. Prepare containers
+# =====================================================================
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-your-containers
-cd ${folder_main}/software
+cd ${folder_root}/software
 
 # Q:DO WE NEED THE STEP BELOW??????? CAN WE DIRECTLY USE `SINGULARITY BUILD`?????
 
@@ -64,7 +56,7 @@ cd ${folder_main}/software
 cmd="singularity build ${bidsapp}-${bidsapp_version_dot}.sif ${docker_link}"
 
 # Step 2.2 Create a container dataset:
-cmd='datalad create -D "${msg_container}"" ${bidsapp}-container'    # -D has to be quoted with "", instead of ''
+cmd='datalad create -D "${msg_container}" ${bidsapp}-container'    # -D has to be quoted with "", instead of ''
 
 cd ${bidsapp}-container
 fn_sif_orig="${folder_sif}/${bidsapp}-${bidsapp_version_dot}.sif"
@@ -73,16 +65,26 @@ cmd="datalad containers-add --url ${fn_sif_orig} ${bidsapp}-${bidsapp_version_da
 # as the sif file has been copied into `${bidsapp}-container` folder, now we can delete the original sif file:
 cmd="rm ${fn_sif_orig}"
 
+# =====================================================================
 # Step 3. Preparing the analysis dataset
+# =====================================================================
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-the-analysis-dataset
 
-cd ${folder_main}
-cp babs_tests/testdata/bootstrap-fmriprep-multises-NKI-exemplar.sh ./   # copy the bootstrap script
+cd ${folder_data4babs_NKI}
+wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises.sh
+mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
+
+# Some updates in the bootstrap script:
+# e.g., add `--new-store-ok` when `create-sibling-ria`
+# for fmriprep, I used the boostrap.sh from ${folder_root}, which I have tuned and made it more robust
 
 # Run the bootstrap script:
-cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EXEMPLARS/NKI/ ${folder_main}/software/${bidsapp}-container"
+cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${folder_root}/software/${bidsapp}-container"
+# ^^ will create a new folder named `${bidsapp}-multises`
 
+# =====================================================================
 # Step 4. Run and debug
+# =====================================================================
 # Now, follow instructions on pennlinc.github.io to submit the jobs.
 
 # There are three ways to run the jobs:
@@ -95,6 +97,12 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
     # However, should not submit a lot of jobs running here! will blow up the space!
 # 3. manual/interactive + at `comp_space`: 1) change to `comp_space` as in #2; run the `participant_job.sh` line by line manually to have an idea what's going on at each step
     # make sure to skip `set -e -u -x` in order to not get logged out...
+
+# Before running, if there is any change (e.g., in participant_job.sh; not needed: qsub_calls.sh): 
+    # make sure you:
+    # `datalad save`
+    # `datalad push --to input`
+    # `datalad push --to output`   # if there is already results in output-ria, skip this
 
 # WHAT TO CHECK after the jobs are finished (no jobid in `qstat`):
 # 1. check if branches are successfully created:
@@ -129,15 +137,18 @@ cmd="bash bootstrap-fmriprep-multises-NKI-exemplar.sh /cbica/projects/RBC/RBC_EX
 # `participant_job.sh`: change back to: cd ${CBICA_TMPDIR}
 # delete the last line (already run) from `qsub_calls.sh`
 
-
+# =====================================================================
 # Step 5. Merge outputs
+# =====================================================================
 # Before running `merge_outputs.sh`, check if you want to delete any branches (a job's outputs) first. 
     # go to `output_ria/<3 char>/<long char>`
     # $ git branch -a
     # if there is a branch you want to delete:
     # $ git branch -d <branch name>
 
+# =====================================================================
 # Step 6. Audit your runs
+# =====================================================================
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
 
 # Done - 2022-08-08

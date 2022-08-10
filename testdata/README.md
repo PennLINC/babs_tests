@@ -1,6 +1,7 @@
 # Create test data for BABS
 
 * where: /cbica/projects/RBC/chenying_practice/data_for_babs/NKI/raw_bids_exemplars
+    * this is datalad sibling of original folder: /cbica/projects/RBC/RBC_EXEMPLARS/NKI/
 * which dataset: NKI
 * NKI IDs: see [prep_test_data.sh](prep_test_data.sh)
 * In this folder:
