@@ -79,12 +79,13 @@ cmd="rm ${fn_sif_orig}"
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-the-analysis-dataset
 
 cd ${folder_data4babs_NKI}
+# better practice than what's below: wget to local computer, make changes (as below), push to `babs_test` repo, then download from github onto cubic
 wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises.sh
 mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
 
 # Some updates in the bootstrap script:
-# 1. change the container version!!!
-# 2. e.g., add `--new-store-ok` when `create-sibling-ria`
+# 1. change the container version!!! Search in vscode: x.x.x, and x-x-x, and replace
+# 2. add `--new-store-ok` when `create-sibling-ria`, if using latest datalad
 # for fmriprep, I used the boostrap.sh from ${folder_root}, which I have tuned and made it more robust
 
 # Run the bootstrap script:

@@ -86,6 +86,11 @@ cp -r ${bids_hashing}/* ${bids_datalad}
 cd ${bids_datalad}
 datalad save -m "add bids data"
 
+# Step 2.1.2 Copy the dataset_description.json from the original datalad dataset (forgot to do this previously)
+cd ${bids_datalad}
+cp ${folder_from}/dataset_description.json ./
+datalad save -m "copy dataset_description.json from original datalad dataset"
+
 # The BIDS Apps' bootstraps can be run at the same time (QSIPrep, fMRIPrep; after fMRIPrep: XCP-D)
 
 # Step 2.2 Run fMRIPrep
