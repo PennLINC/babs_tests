@@ -111,6 +111,21 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
 # TODO in BABS:
 # current bootstrap script seems does not check if e.g., dwi exists at all for qsiprep-multises... The `qsub_calls.sh` will cover all existing subj and session folders, regardless `dwi` (or `anat` in fmriprep-multises bootstrap script) exists or not...
 
+# If the original input BIDS data (at another folder, not in this bootstrap folder) changes (e.g., a files is added):
+    # cd analysis/input/data
+    # datalad get -n .    # not sure if this is needed, but suggested by Matt
+    # datalad siblings   # get the sibling's name, e.g., `origin`
+    # datalad update --how=merge -s <sibling_name>   # get the updates
+    # ls    # make sure you really see the updates!!
+    # # now, the parent dataset needs to be saved:
+    # cd ../..   # now you're at `analysis` folder
+    # datalad status    # it will say the `inputs/data` was modified; if not, probably your update wasn't successful...
+    # datalad save
+    # datalad push --to input
+    # datalad push --to output
+    # # below is sth Matt did but I did not test out, which is to save the extra inodes
+    # datalad uninstall -r --nocheck inputs/data
+
 # Before running, if there is any change (e.g., in participant_job.sh; not needed: qsub_calls.sh): 
     # make sure you:
     # `datalad save`
