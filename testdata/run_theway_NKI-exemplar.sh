@@ -113,7 +113,7 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
 
 # If the original input BIDS data (at another folder, not in this bootstrap folder) changes (e.g., a files is added):
     # cd analysis/input/data
-    # datalad get -n .    # not sure if this is needed, but suggested by Matt
+    # datalad get -n .    # `analysis/input/data` is a subdataset; get the (udpated) metadata of it. 
     # datalad siblings   # get the sibling's name, e.g., `origin`
     # datalad update --how=merge -s <sibling_name>   # get the updates
     # ls    # make sure you really see the updates!!
@@ -151,6 +151,14 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
     # on cubic: check out $ qacct -j <jobid> 
     # on cubic: `sge_errors` > my_errors.csv    
     # otherwise, submit a ticket on cubic....
+
+# If the job was run in `comp_space` and failed (i.e., `participant_job.sh` did not finish and did not `rm -rf` the folder):
+    # you need to manually delete that job folder in `comp_space`
+    # BEFORE DELETING: cd to that folder, check if there is anything you want (e.g., belongs to other BIDS App's output)! OR if it's a current job that's still running...
+    # best to run the 3 commands in the end of `participant_job.sh`: `datalad install`, `datalad drop -r`, `git annex dead here`
+    # If `rm -rf` gives Permission error, try this first:
+    # `chmod -R +w <foldername>`
+
 
 
 # STATUS for the NK exemplar data I played with (not useful anymore):
