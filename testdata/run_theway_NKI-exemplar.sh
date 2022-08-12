@@ -85,9 +85,13 @@ mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
 # Some updates in the bootstrap script:
 # 1. change the container version!!! Search in vscode: x.x.x, and x-x-x, and replace
     # for bootstrap on the outputs of another bootstrap, e.g., XCP:
-    # also need to change the version of upper BIDS App (e.g., fMRIPrep is upper of XCP)!!
+        # also need to change the version of upper BIDS App (e.g., fMRIPrep is upper of XCP)!!
 # 2. add `--new-store-ok` when `create-sibling-ria`, if using latest datalad
 # for fmriprep, I used the boostrap.sh from ${folder_root}, which I have tuned and made it more robust
+# for xcp, I: 
+    # updated xcp version; (no need to update fMRIPrep version - the same as I used)
+    # add `--new-store-ok`
+    # change xcp-abcd --> xcp
 
 # Run the bootstrap script:
 cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${folder_root}/software/${bidsapp}-container"
