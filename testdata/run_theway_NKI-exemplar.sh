@@ -29,11 +29,11 @@ xcpd_docker_path="pennlinc/xcp_d:${xcpd_version_dot}"
 # +++++++++++++++++++++++++++++++++++++
 # CHANGE FOR EACH RUN:
 folder_BIDS="/cbica/projects/RBC/RBC_EXEMPLARS/NKI" 
-bidsapp="qsiprep"    # e.g., qsiprep, fmriprep, xcpd
-bidsapp_version_dot=${qsiprep_version_dot}    # e.g., x.x.x
-bidsapp_version_dash=${qsiprep_version_dash}     # e.g., x-x-x
-docker_path=${qsiprep_docker_path}   # e.g., pennbbl/qsiprep:x.x.x
-docker_link="docker://${qsiprep_docker_path}"  # e.g., docker://pennbbl/qsiprep:x.x.x
+bidsapp="xcp"    # e.g., qsiprep, fmriprep, xcp (without d!!)
+bidsapp_version_dot=${xcpd_version_dot}    # e.g., x.x.x
+bidsapp_version_dash=${xcpd_version_dash}     # e.g., x-x-x
+docker_path=${xcpd_docker_path}   # e.g., pennbbl/qsiprep:x.x.x
+docker_link="docker://${xcpd_docker_path}"  # e.g., docker://pennbbl/qsiprep:x.x.x
 
 folder_sif="${folder_root}/software"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
 msg_container="this is ${bidsapp} container"   # e.g., this is qsiprep container
@@ -61,14 +61,13 @@ cmd="singularity build ${bidsapp}-${bidsapp_version_dot}.sif ${docker_link}"
 # ^^ took how long: ~10-25min; depending on what already exist on the cubic project user.
 
 # Step 2.2 Create a container dataset:
-datalad create -D "${msg_container}" ${bidsapp}-container    # -D has to be quoted with "", instead of ''
-# next time, try:
-# datalad create -D ${msg_container} ${bidsapp}-container 
+datalad create -D "${msg_container}" ${bidsapp}-container    # -D has to be quoted with "", instead of '', and it has to be quoted....
 
 
 cd ${bidsapp}-container
 fn_sif_orig="${folder_sif}/${bidsapp}-${bidsapp_version_dot}.sif"
 cmd="datalad containers-add --url ${fn_sif_orig} ${bidsapp}-${bidsapp_version_dash}"
+# ^^ this sif file is copied as: `.datalad/environment/${bidsapp}-${bidsapp_version_dash}/image` 
 
 # as the sif file has been copied into `${bidsapp}-container` folder, now we can delete the original sif file:
 cmd="rm ${fn_sif_orig}"
@@ -79,12 +78,14 @@ cmd="rm ${fn_sif_orig}"
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-the-analysis-dataset
 
 cd ${folder_data4babs_NKI}
-# better practice than what's below: wget to local computer, make changes (as below), push to `babs_test` repo, then download from github onto cubic
+# WAIT: better practice than what's below: wget to local computer, make changes (as below), push to `babs_test` repo, then download from github onto cubic
 wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises.sh
 mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
 
 # Some updates in the bootstrap script:
 # 1. change the container version!!! Search in vscode: x.x.x, and x-x-x, and replace
+    # for bootstrap on the outputs of another bootstrap, e.g., XCP:
+    # also need to change the version of upper BIDS App (e.g., fMRIPrep is upper of XCP)!!
 # 2. add `--new-store-ok` when `create-sibling-ria`, if using latest datalad
 # for fmriprep, I used the boostrap.sh from ${folder_root}, which I have tuned and made it more robust
 
@@ -180,10 +181,48 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
     # $ git branch -a
     # if there is a branch you want to delete:
     # $ git branch -d <branch name>
+# Also, in `merge_outputs.sh`, might need to modify `gitref=git show-ref master` to `main`: go to `output_ria/<3char>/<fullchar>`, try `git show-ref main` and `git show-ref master` , see which one gives you output
+    # if you modified, remember to `datalad save -m "xx" code/merge_outputs.sh`  # change to relative path if needed!
+
+# Run:   # in `analysis` folder:
+bash code/merge_outputs.sh
+
 
 # =====================================================================
 # Step 6. Audit your runs
 # =====================================================================
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
 
-# Done - 2022-08-08
+# get the bootstrap script for AUDIT:
+cd ${folder_data4babs_NKI}
+wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises-audit.sh
+# ^^ if there is no existing one on `TheWay`, modify upon existing one.
+
+mv bootstrap-${bidsapp}-multises-audit.sh bootstrap-${bidsapp}-multises-data4babs.sh
+
+# bootstrap!
+bash bootstrap-${bidsapp}-multises-audit-data4babs.sh ${folder_data4babs_NKI}/${bidsapp}-multises    # the argument here must be a full path..
+
+# now, in the main folder, aside of `${bidsapp}-multises`, you should see a new folder called `${bidsapp}-multises-audit`. The structure in this folder is analogous to `${bidsapp}-multises`
+cd ${bidsapp}-multises-audit/analysis
+
+# Run the audit: (if you don't have anything to change in `participant_job.sh`)
+bash code/qsub_calls.sh
+# ^^ this is quick.
+
+# After qsub is finished, go to audit's output_ria/<3char>/<fullchar>, and:
+git branch -a
+# you should see branches of audit jobs
+
+# Merge: (from `analysis` folder)
+# cd ../../../analysis    # if you were in `output_ria/<3char>/<fullchar>`
+# BEFORE YOU DO: change `master` to `main`....
+bash code/merge_outputs.sh
+# ^^ this will generate merge_ds/csvs/*.csv - these are audit results.
+
+
+# Concatenate single row CSVs from jobs into a table:
+bash code/concat_outputs.sh
+# ^^ this will generate `${bidsapp}-AUDIT.csv` in the `${bidsapp}-multises-audit` folder
+
+# TODO: the concat csv filename should be `${bidsapp}-MULTISES-AUDIT.csv`, but current versions is without MULTISES
