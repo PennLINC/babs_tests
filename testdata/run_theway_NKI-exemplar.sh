@@ -38,6 +38,11 @@ docker_link="docker://${xcpd_docker_path}"  # e.g., docker://pennbbl/qsiprep:x.x
 folder_sif="${folder_root}/software"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
 msg_container="this is ${bidsapp} container"   # e.g., this is qsiprep container
 folder_container="${folder_root}/software/${bidsapp}-container"    # the datalad dataset of the container
+
+if [[ "${bidsapp}" == "xcp"  ]]; then
+    # the input BIDS data should be the output of fMRIPrep:
+    folder_bids_input="${folder_data4babs_NKI}/fmriprep-multises"
+fi
 # +++++++++++++++++++++++++++++++++++++
 
 # Hint: Run each `cmd` by $cmd. We did not include here just in case you run this bash file
@@ -91,7 +96,8 @@ mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
 # for xcp, I: 
     # updated xcp version; (no need to update fMRIPrep version - the same as I used)
     # add `--new-store-ok`
-    # change xcp-abcd --> xcp
+    # change xcp-abcd --> xcp_d
+    # change xcp-0-1-1.zip to xcp-0.1.1.zip to be consistent with fMRIPrep and QSIPrep
 
 # Run the bootstrap script:
 cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${folder_root}/software/${bidsapp}-container"
