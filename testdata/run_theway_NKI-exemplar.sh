@@ -83,7 +83,7 @@ cmd="rm ${fn_sif_orig}"
 # ref: https://pennlinc.github.io/docs/TheWay/RunningDataLadPipelines/#preparing-the-analysis-dataset
 
 cd ${folder_data4babs_NKI}
-# WAIT: better practice than what's below: wget to local computer, make changes (as below), push to `babs_test` repo, then download from github onto cubic
+# WAIT: better practice than what's below: wget to local computer, make changes (as below), push to `babs_test` repo, then download from github onto cubic (sometimes cannot wget the up-to-date script, then copy the updated one from a repo of `babs_tests` on cubic)
 wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises.sh
 mv bootstrap-${bidsapp}-multises.sh bootstrap-${bidsapp}-multises-data4babs.sh
 
