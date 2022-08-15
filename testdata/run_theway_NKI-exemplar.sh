@@ -207,7 +207,7 @@ bash code/merge_outputs.sh
     # bootstrap-fmriprep-multises-audit.sh from TheWay --> bootstrap-qsiprep-multises-audit-data4babs.sh
         # replaced fmriprep --> qsiprep; 
         # did not find fmriprep version number in this bootstrap script
-    # TheWay/general/bootstrap-fmriprep-multises-audit.py --> bootstrap-qsiprep-multises-audit.py
+    # PennLINC/RBC/master/PennLINC/Generic/bootstrap-fmriprep-multises-audit.py --> bootstrap-qsiprep-multises-audit.py
 
 # get the bootstrap script for AUDIT:
 cd ${folder_data4babs_NKI}
