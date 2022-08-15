@@ -40,7 +40,7 @@ output_dir = sys.argv[3]
 
 error_dir = sys.argv[4]
 
-pipeline = 'fmriprep'
+pipeline = 'qsiprep'
 
 # get output subs list
 output_subs = []
