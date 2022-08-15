@@ -21,8 +21,8 @@ qsiprep_version_dot="0.16.0RC3"
 qsiprep_version_dash="0-16-0RC3"
 qsiprep_docker_path="pennbbl/qsiprep:${qsiprep_version_dot}"
 
-xcpd_version_dot="0.1.1"
-xcpd_version_dash="0-1-1"
+xcpd_version_dot="0.1.2"
+xcpd_version_dash="0-1-2"
 xcpd_docker_path="pennlinc/xcp_d:${xcpd_version_dot}"
 # ++++++++++++++++++++++++++++++++++++
 
