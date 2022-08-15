@@ -172,10 +172,10 @@ datalad get -r pennlinc-containers
 datalad run \
     -i code/xcp_zip.sh \
     -i inputs/data/${subid}_${sesid}_fmriprep*.zip \
-    -i pennlinc-containers/.datalad/environments/xcp-0-1-1/image \
+    -i pennlinc-containers/.datalad/environments/xcp-0-1-2/image \
     --explicit \
-    -o ${subid}_${sesid}_xcp.0.1.1.zip \
-    -m "xcp_d:0.1.1 ${subid} ${sesid}" \
+    -o ${subid}_${sesid}_xcp.0.1.2.zip \
+    -m "xcp_d:0.1.2 ${subid} ${sesid}" \
     "bash ./code/xcp_zip.sh ${subid} ${sesid}"
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
@@ -207,12 +207,12 @@ cd $wd
 
 mkdir -p ${PWD}/.git/tmp/wdir
 export SINGULARITYENV_TEMPLATEFLOW_HOME='~/.cache/templateflow'
-singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-1/image inputs/data/fmriprep xcp participant \
+singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp participant \
 --despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir
-singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-1/image inputs/data/fmriprep xcp participant \
+singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp participant \
 --despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir --cifti
 cd xcp
-7z a ../${subid}_${sesid}_xcp-0.1.1.zip xcp_d
+7z a ../${subid}_${sesid}_xcp-0.1.2.zip xcp_d
 rm -rf prep .git/tmp/wkdir
 
 EOT
