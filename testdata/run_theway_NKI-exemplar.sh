@@ -219,14 +219,14 @@ wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootst
 
 mv bootstrap-${bidsapp}-multises-audit.sh bootstrap-${bidsapp}-multises-data4babs.sh
 
-# TODO in BABS:
-# current bootstrap script (for initial bootstrap, for audit) seems does not check if e.g., dwi exists at all for qsiprep-multises... The `qsub_calls.sh` will cover all existing subj and session folders, regardless `dwi` (or `anat` in fmriprep-multises bootstrap script) exists or not...
-
 # bootstrap!
 bash bootstrap-${bidsapp}-multises-audit-data4babs.sh ${folder_data4babs_NKI}/${bidsapp}-multises    # the argument here must be a full path..
 
 # now, in the main folder, aside of `${bidsapp}-multises`, you should see a new folder called `${bidsapp}-multises-audit`. The structure in this folder is analogous to `${bidsapp}-multises`
 cd ${bidsapp}-multises-audit/analysis
+
+# TODO in BABS:
+# current bootstrap script (for initial bootstrap, for audit) seems does not check if e.g., dwi exists at all for qsiprep-multises... The `qsub_calls.sh` will cover all existing subj and session folders, regardless `dwi` (or `anat` in fmriprep-multises bootstrap script) exists or not...
 
 # Run the audit: (if you don't have anything to change in `participant_job.sh`)
 bash code/qsub_calls.sh

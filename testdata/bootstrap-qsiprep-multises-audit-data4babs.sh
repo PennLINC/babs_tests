@@ -204,7 +204,7 @@ chmod +x code/participant_job.sh
 # mv bootstrap-qsiprep-multises-audit.py code/
 # chmod +x code/bootstrap-qsiprep-multises-audit.py
 # wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap_zip_audit.py
-wget https://github.com/PennLINC/babs_tests/blob/main/testdata/bootstrap_zip_audit.py   # use the python file from `babs_tests` repo
+wget https://raw.githubusercontent.com/PennLINC/babs_tests/main/testdata/bootstrap_zip_audit.py   # use the python file from `babs_tests` repo
 mv bootstrap_zip_audit.py code/
 chmod +x code/bootstrap_zip_audit.py
 
