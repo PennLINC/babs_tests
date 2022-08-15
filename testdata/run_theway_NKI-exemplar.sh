@@ -208,7 +208,7 @@ bash code/merge_outputs.sh
         # replaced fmriprep --> qsiprep; 
         # did not find fmriprep version number in this bootstrap script
         # also incorporate: TheWay/scripts/cubic/bootstrap-qsiprep-audit.sh, which uses `bootstrap_zip_audit.sh` from RBC as a generic file
-        # also changed master to main
+        # other minor changes: changed master to main; add `--new-store-ok`
 
 # get the bootstrap script for AUDIT:
 cd ${folder_data4babs_NKI}
@@ -216,6 +216,9 @@ wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootst
 # ^^ if there is no existing one on `TheWay`, modify upon existing one.
 
 mv bootstrap-${bidsapp}-multises-audit.sh bootstrap-${bidsapp}-multises-data4babs.sh
+
+# TODO in BABS:
+# current bootstrap script (for initial bootstrap, for audit) seems does not check if e.g., dwi exists at all for qsiprep-multises... The `qsub_calls.sh` will cover all existing subj and session folders, regardless `dwi` (or `anat` in fmriprep-multises bootstrap script) exists or not...
 
 # bootstrap!
 bash bootstrap-${bidsapp}-multises-audit-data4babs.sh ${folder_data4babs_NKI}/${bidsapp}-multises    # the argument here must be a full path..
