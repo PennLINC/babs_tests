@@ -159,16 +159,25 @@ fi
 echo DATALAD RUN INPUT
 echo ${INPUT_ZIP}
 
+# datalad run \
+#     -i code/bootstrap-qsiprep-multises-audit.py \
+#     ${INPUT_ZIP} \
+#     -i inputs/data/inputs/data/${subid} \
+#     -i inputs/qsiprep_logs/*${subid}*${sesid}* \
+#     --explicit \
+#     -o ${output_file} \
+#     -m "qsiprep-audit ${subid} ${sesid}" \
+#     "python code/bootstrap-qsiprep-multises-audit.py ${subid}_${sesid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file}"
+
 datalad run \
-    -i code/bootstrap-qsiprep-multises-audit.py \
+    -i code/bootstrap_zip_audit.py \
     ${INPUT_ZIP} \
-    -i inputs/data/inputs/data/${subid} \
-    -i inputs/qsiprep_logs/*${subid}*${sesid}* \
+    -i inputs/qsiprep_logs/*${subid}* \
     --explicit \
     -o ${output_file} \
-    -m "qsiprep-audit ${subid} ${sesid}" \
-    "python code/bootstrap-qsiprep-multises-audit.py ${subid}_${sesid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file}"
-
+    -m "qsiprep-audit ${subid}" \
+    "python code/bootstrap_zip_audit.py ${subid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file} qsiprep"
+ 
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
 # and the output branch
@@ -190,9 +199,13 @@ EOT
 chmod +x code/participant_job.sh
 
 # Sydney, please wget your audit script here!
-wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap-qsiprep-multises-audit.py
-mv bootstrap-qsiprep-multises-audit.py code/
-chmod +x code/bootstrap-qsiprep-multises-audit.py
+# wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap-qsiprep-multises-audit.py
+# wget https://raw.githubusercontent.com/PennLINC/babs_tests/main/testdata/bootstrap-qsiprep-multises-audit.py
+# mv bootstrap-qsiprep-multises-audit.py code/
+# chmod +x code/bootstrap-qsiprep-multises-audit.py
+wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap_zip_audit.py
+mv bootstrap_zip_audit.py code/
+chmod +x code/bootstrap_zip_audit.py
 
 mkdir logs
 echo .SGE_datalad_lock >> .gitignore
@@ -218,7 +231,7 @@ cd merge_ds
 NBRANCHES=$(git branch -a | grep job- | sort | wc -l)
 echo "Found $NBRANCHES branches to merge"
 
-gitref=$(git show-ref master | cut -d ' ' -f1 | head -n 1)
+gitref=$(git show-ref main | cut -d ' ' -f1 | head -n 1)
 
 # query all branches for the most recent commit and check if it is identical.
 # Write all branch identifiers for jobs without outputs into a file.
