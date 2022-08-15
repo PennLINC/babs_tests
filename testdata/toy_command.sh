@@ -1,7 +1,8 @@
 #!/bin/bash
-dir=$1
-echo "Counting number of files in directory: ${dir}"
+testdir=$1   # this `testdir` is the mounted dir in the container; this is probably not the same as the local dir
+# echo "Counting number of files in directory: ${testdir}"
 
-num_files=`find ${dir} -not -path '*/.*' -type f | wc -l`
+# ls ${testdir}
+num_files=`find ${testdir} -not -path '*/.*' -type f | wc -l`
 # ^^: `-not -path '*/.*'` means does not count hidden files and directories; `wc -l` means count the numbers
-echo "Indentified ${num_files} in this directory!"
+echo "Identified ${num_files} non-hidden files in this directory!"

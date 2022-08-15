@@ -1,8 +1,6 @@
 # This Dockerfile is to build a docker image of a toy BIDS App for testing BABS. 
 # The function is to count the number of images in a BIDS dataset
 
-ARG DIR
-
 FROM alpine:3.16
 
 # install bash:
@@ -11,6 +9,6 @@ RUN apk add --no-cache --upgrade bash
 CMD /bin/bash
 # now you can test if `expr 1 + 2` works.
 
-COPY "toy_command.sh" .
-RUN ["chmod", "+x", "./toy_command.sh"]
-ENTRYPOINT [ "./toy_command.sh" ]
+COPY toy_command.sh /toy_command.sh
+RUN chmod +x /toy_command.sh
+ENTRYPOINT ["/toy_command.sh"]
