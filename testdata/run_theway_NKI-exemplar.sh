@@ -207,7 +207,9 @@ bash code/merge_outputs.sh
     # bootstrap-fmriprep-multises-audit.sh from TheWay --> bootstrap-qsiprep-multises-audit-data4babs.sh
         # replaced fmriprep --> qsiprep; 
         # did not find fmriprep version number in this bootstrap script
-        # also incorporate: TheWay/scripts/cubic/bootstrap-qsiprep-audit.sh, which uses `bootstrap_zip_audit.sh` from RBC as a generic file
+        # also incorporate: TheWay/scripts/cubic/bootstrap-qsiprep-audit.sh, which uses `bootstrap_zip_audit.sh` 
+            # `bootstrap_zip_audit.sh` is originally from RBC as a generic file, it is compatible with qsiprep/fmriprep/xcp, but the version of them are hard coded....
+            # therefore I have a copy in this `babs_tests` repo, to make it generic to container versions as an input argument
         # other minor changes: changed master to main; add `--new-store-ok`
 
 # get the bootstrap script for AUDIT:

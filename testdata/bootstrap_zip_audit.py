@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
+# Original copy: RBC repo/PennLINC/Generic
+# Modified by Chenying: added input of container version
+
 # *PREP AUDIT: Currently configured for qsiprep and fmriprep
+# Note by Chenying: seems also for xcp?
 
 # command line: python audit_script.py pipeline bids_dir output_dir error_dir audit_path
 
@@ -41,6 +45,8 @@ output_dir = sys.argv[3]
 error_dir = sys.argv[4]
 
 pipeline = sys.argv[6]
+
+bidsapp_version = sys.argv[7]    # e.g., 0.0.0   | using dots, instead of dashes, including for xcp-d, as Chenying has changed xcp-d bootstrap's zip filenames are with dots, not dashes
 
 # GET LIST OF ALL BRANCH NAMES
 # CREATE DICTIONARY OF SUB_ID/BRANCH_NAME KEY/VALUE PAIRS
@@ -135,11 +141,11 @@ for row in range(len(audit)):
         #subprocess.run(['datalad', 'get', subject + '_fmriprep-20.2.1.zip'], cwd=output_dir)
         #subprocess.run(['datalad', 'unlock', subject + '_fmriprep-20.2.1.zip'], cwd=output_dir)
         if pipeline == 'fmriprep':
-            z = zipfile.ZipFile(output_dir + '/' + subject + '_fmriprep-20.2.3.zip')
+            z = zipfile.ZipFile(output_dir + '/' + subject + '_fmriprep-' + bidsapp_version + '.zip')
         if pipeline == 'qsiprep':
-            z = zipfile.ZipFile(output_dir + '/' + subject + '_qsiprep-0.14.3.zip')
+            z = zipfile.ZipFile(output_dir + '/' + subject + '_qsiprep-' + bidsapp_version + '.zip')
         if pipeline == 'xcp':
-            z = zipfile.ZipFile(output_dir + '/' + subject + '_xcp-0-0-8.zip')
+            z = zipfile.ZipFile(output_dir + '/' + subject + '_xcp-' + bidsapp_version + '.zip')
     # IN THE CASE OF NO ZIP FILE CREATED
     else:
         audit.at[row, "HasOutput"] = "False"

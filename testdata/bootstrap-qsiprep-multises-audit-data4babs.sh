@@ -176,7 +176,7 @@ datalad run \
     --explicit \
     -o ${output_file} \
     -m "qsiprep-audit ${subid}" \
-    "python code/bootstrap_zip_audit.py ${subid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file} qsiprep"
+    "python code/bootstrap_zip_audit.py ${subid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file} qsiprep 0.16.0RC3"
  
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
@@ -203,7 +203,8 @@ chmod +x code/participant_job.sh
 # wget https://raw.githubusercontent.com/PennLINC/babs_tests/main/testdata/bootstrap-qsiprep-multises-audit.py
 # mv bootstrap-qsiprep-multises-audit.py code/
 # chmod +x code/bootstrap-qsiprep-multises-audit.py
-wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap_zip_audit.py
+# wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap_zip_audit.py
+wget https://github.com/PennLINC/babs_tests/blob/main/testdata/bootstrap_zip_audit.py   # use the python file from `babs_tests` repo
 mv bootstrap_zip_audit.py code/
 chmod +x code/bootstrap_zip_audit.py
 
