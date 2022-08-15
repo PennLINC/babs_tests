@@ -203,6 +203,12 @@ bash code/merge_outputs.sh
 # =====================================================================
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
 
+# Prepare the audit scripts for qsiprep-multises-audit:
+    # bootstrap-fmriprep-multises-audit.sh from TheWay --> bootstrap-qsiprep-multises-audit-data4babs.sh
+        # replaced fmriprep --> qsiprep; 
+        # did not find fmriprep version number in this bootstrap script
+    # TheWay/general/bootstrap-fmriprep-multises-audit.py --> bootstrap-qsiprep-multises-audit.py
+
 # get the bootstrap script for AUDIT:
 cd ${folder_data4babs_NKI}
 wget https://raw.githubusercontent.com/PennLINC/TheWay/main/scripts/cubic/bootstrap-${bidsapp}-multises-audit.sh

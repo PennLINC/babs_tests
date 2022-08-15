@@ -18,7 +18,7 @@ set -e -u
 
 
 ## Set up the directory that will contain the necessary directories
-PROJECTROOT=${PWD}/fmriprep-multises-audit
+PROJECTROOT=${PWD}/qsiprep-multises-audit
 if [[ -d ${PROJECTROOT} ]]
 then
     echo ${PROJECTROOT} already exists
@@ -31,37 +31,37 @@ then
     # exit 1
 fi
 
-FMRIPREP_BOOTSTRAP_DIR=$1
-FMRIPREP_INPUT=ria+file://${FMRIPREP_BOOTSTRAP_DIR}"/output_ria#~data"
-if [[ -z ${FMRIPREP_BOOTSTRAP_DIR} ]]
+QSIPREP_BOOTSTRAP_DIR=$1
+QSIPREP_INPUT=ria+file://${QSIPREP_BOOTSTRAP_DIR}"/output_ria#~data"
+if [[ -z ${QSIPREP_BOOTSTRAP_DIR} ]]
 then
-    echo "Required argument is the path to the fmriprep bootstrap directory."
+    echo "Required argument is the path to the qsiprep bootstrap directory."
     echo "This directory should contain analysis/, input_ria/ and output_ria/."
     # exit 1
 fi
 
 # Is it a directory on the filesystem?
-FMRIPREP_INPUT_METHOD=clone
-if [[ ! -d "${FMRIPREP_BOOTSTRAP_DIR}/output_ria/alias/data" ]]
+QSIPREP_INPUT_METHOD=clone
+if [[ ! -d "${QSIPREP_BOOTSTRAP_DIR}/output_ria/alias/data" ]]
 then
     echo "There must be alias in the output ria store that points to the"
-    echo "fmriprep output dataset"
+    echo "qsiprep output dataset"
     # exit 1
 fi
 
-# Check that there are some fmriprep zip files present in the input
+# Check that there are some qsiprep zip files present in the input
 # If you only need freesurfer, comment this out
-# FMRIPREP_ZIPS=$(cd ${FMRIPREP_INPUT} && ls *fmriprep*.zip)
-# if [[ -z "${FMRIPREP_ZIPS}" ]]; then
-#    echo No fmriprep zip files found in ${FMRIPREP_INPUT}
+# QSIPREP_ZIPS=$(cd ${QSIPREP_INPUT} && ls *qsiprep*.zip)
+# if [[ -z "${QSIPREP_ZIPS}" ]]; then
+#    echo No qsiprep zip files found in ${QSIPREP_INPUT}
 #    exit 1
 # fi
 
-# Check that freesurfer data exists. If you only need fmriprep zips, comment
+# Check that freesurfer data exists. If you only need qsiprep zips, comment
 # this out
-# FREESURFER_ZIPS=$(cd ${FMRIPREP_INPUT} && ls *freesurfer*.zip)
+# FREESURFER_ZIPS=$(cd ${QSIPREP_INPUT} && ls *freesurfer*.zip)
 # if [[ -z "${FREESURFER_ZIPS}" ]]; then
-#    echo No freesurfer zip files found in ${FMRIPREP_INPUT}
+#    echo No freesurfer zip files found in ${QSIPREP_INPUT}
 #    exit 1
 # fi
 
@@ -71,10 +71,10 @@ cd ${PROJECTROOT}
 
 
 # Create a dataset with the logs in it
-mkdir fmriprep_logs
-cd fmriprep_logs
-datalad create -D "Logs from the fmriprep runs"
-cp ${FMRIPREP_BOOTSTRAP_DIR}/analysis/logs/* .
+mkdir qsiprep_logs
+cd qsiprep_logs
+datalad create -D "Logs from the qsiprep runs"
+cp ${QSIPREP_BOOTSTRAP_DIR}/analysis/logs/* .
 datalad save -m "add logs"
 
 # Jobs are set up to not require a shared filesystem (except for the lockfile)
@@ -96,8 +96,8 @@ datalad create-sibling-ria -s output "${output_store}"
 pushremote=$(git remote get-url --push output)
 datalad create-sibling-ria -s input --storage-sibling off "${input_store}"
 
-datalad install -d . -r --source ${FMRIPREP_INPUT} inputs/data
-datalad install -d . -r --source ${PROJECTROOT}/fmriprep_logs inputs/fmriprep_logs
+datalad install -d . -r --source ${QSIPREP_INPUT} inputs/data
+datalad install -d . -r --source ${PROJECTROOT}/qsiprep_logs inputs/qsiprep_logs
 
 # amend the previous commit with a nicer commit message
 git commit --amend -m 'Register input data dataset as a subdataset'
@@ -144,14 +144,14 @@ git checkout -b "${BRANCH}"
 # Do the run!
 BIDS_DIR=${PWD}/inputs/data/inputs/data
 ZIPS_DIR=${PWD}/inputs/data
-ERROR_DIR=${PWD}/inputs/fmriprep_logs
+ERROR_DIR=${PWD}/inputs/qsiprep_logs
 CSV_DIR=csvs
 mkdir ${CSV_DIR}
-output_file=${CSV_DIR}/${subid}_${sesid}_fmriprep_audit.csv
+output_file=${CSV_DIR}/${subid}_${sesid}_qsiprep_audit.csv
 
 datalad get -n inputs/data
 
-INPUT_ZIP=$(ls inputs/data/${subid}_${sesid}_fmriprep*.zip | cut -d '@' -f 1 || true)
+INPUT_ZIP=$(ls inputs/data/${subid}_${sesid}_qsiprep*.zip | cut -d '@' -f 1 || true)
 if [ ! -z "${INPUT_ZIP}" ]; then
     INPUT_ZIP="-i ${INPUT_ZIP}"
 fi
@@ -160,14 +160,14 @@ echo DATALAD RUN INPUT
 echo ${INPUT_ZIP}
 
 datalad run \
-    -i code/bootstrap-fmriprep-multises-audit.py \
+    -i code/bootstrap-qsiprep-multises-audit.py \
     ${INPUT_ZIP} \
     -i inputs/data/inputs/data/${subid} \
-    -i inputs/fmriprep_logs/*${subid}*${sesid}* \
+    -i inputs/qsiprep_logs/*${subid}*${sesid}* \
     --explicit \
     -o ${output_file} \
-    -m "fmriprep-audit ${subid} ${sesid}" \
-    "python code/bootstrap-fmriprep-multises-audit.py ${subid}_${sesid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file}"
+    -m "qsiprep-audit ${subid} ${sesid}" \
+    "python code/bootstrap-qsiprep-multises-audit.py ${subid}_${sesid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file}"
 
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
@@ -190,15 +190,15 @@ EOT
 chmod +x code/participant_job.sh
 
 # Sydney, please wget your audit script here!
-wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap-fmriprep-multises-audit.py
-mv bootstrap-fmriprep-multises-audit.py code/
-chmod +x code/bootstrap-fmriprep-multises-audit.py
+wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/bootstrap-qsiprep-multises-audit.py
+mv bootstrap-qsiprep-multises-audit.py code/
+chmod +x code/bootstrap-qsiprep-multises-audit.py
 
 mkdir logs
 echo .SGE_datalad_lock >> .gitignore
 echo logs >> .gitignore
 
-datalad save -m "Add logs from fmriprep runs"
+datalad save -m "Add logs from qsiprep runs"
 
 ################################################################################
 # SGE SETUP START - remove or adjust to your needs
@@ -250,7 +250,7 @@ do
     [[ ${num_branches} -lt ${endnum} ]] && endnum=${num_branches}
     branches=$(sed -n "${startnum},${endnum}p;$(expr ${endnum} + 1)q" code/has_results.txt)
     echo ${branches} > ${batch_file}
-    git merge -m "fmriprep results batch ${chunknum}/${num_chunks}" $(cat ${batch_file})
+    git merge -m "qsiprep results batch ${chunknum}/${num_chunks}" $(cat ${batch_file})
 
 done
 
@@ -295,7 +295,7 @@ cd concat_ds/code
 wget https://raw.githubusercontent.com/PennLINC/RBC/master/PennLINC/Generic/concatenator.py
 cd ..
 datalad save -m "added concatenator script"
-datalad run -i 'csvs/*' -o '${PROJECT_ROOT}/FMRIPREP_AUDIT.csv' --expand inputs --explicit "python code/concatenator.py csvs ${PROJECT_ROOT}/FMRIPREP_AUDIT.csv"
+datalad run -i 'csvs/*' -o '${PROJECT_ROOT}/QSIPREP_AUDIT.csv' --expand inputs --explicit "python code/concatenator.py csvs ${PROJECT_ROOT}/QSIPREP_AUDIT.csv"
 datalad save -m "generated report"
 # push changes
 datalad push
