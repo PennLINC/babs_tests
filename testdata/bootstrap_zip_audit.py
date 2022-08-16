@@ -36,7 +36,7 @@ def get_sub_name(path):
         if part.startswith("sub-"):
             return part
 
-sub_id = sys.argv[1]
+sub_id = sys.argv[1]   # if multises: e.g., sub_id = "sub-01_ses-A", separate sub and ses with "_"
 
 bids_dir = sys.argv[2]
 
@@ -81,7 +81,8 @@ for path in Path(output_dir).glob('sub-*'):
 
 #print("OUTPUT_SUBS: ", output_subs)
 #print("SUBID: ", sub_id)
-sub_path = bids_dir + sub_id
+# sub_path = bids_dir + sub_id
+sub_path = bids_dir + '/' + sub_id.replace('_',  '/')  # copied from `bootstrap-fmriprep-multises-audit.sh`, probably this is to turn `sub-01_ses-A` to `sub-01/ses-A`
 
 if pipeline == "qsiprep":
     columns = ["SubjectID", "HasOutput", "HasHTML", "NoErrorsToReport",

@@ -172,11 +172,11 @@ echo ${INPUT_ZIP}
 datalad run \
     -i code/bootstrap_zip_audit.py \
     ${INPUT_ZIP} \
-    -i inputs/qsiprep_logs/*${subid}* \
+    -i inputs/qsiprep_logs/*${subid}*${sesid}* \
     --explicit \
     -o ${output_file} \
-    -m "qsiprep-audit ${subid}" \
-    "python code/bootstrap_zip_audit.py ${subid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file} qsiprep 0.16.0RC3"
+    -m "qsiprep-audit ${subid} ${sesid}" \
+    "python code/bootstrap_zip_audit.py ${subid}_${sesid} ${BIDS_DIR} ${ZIPS_DIR} ${ERROR_DIR} ${output_file} qsiprep 0.16.0RC3"
  
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
