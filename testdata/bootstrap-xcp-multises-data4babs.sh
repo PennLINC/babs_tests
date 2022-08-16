@@ -117,6 +117,7 @@ cat > code/participant_job.sh << "EOT"
 #$ -S /bin/bash
 #$ -l h_vmem=25G
 #$ -l tmpfree=200G
+#$ -pe threaded 6
 #$ -R y 
 #$ -l h_rt=24:00:00
 # Set up the correct conda environment
@@ -207,10 +208,10 @@ cd $wd
 
 mkdir -p ${PWD}/.git/tmp/wdir
 export SINGULARITYENV_TEMPLATEFLOW_HOME='~/.cache/templateflow'
-singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp participant \
---despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir
-singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp participant \
---despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir --cifti
+singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp \
+--despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir --nthreads 6
+singularity run --cleanenv -B ${PWD} pennlinc-containers/.datalad/environments/xcp-0-1-2/image inputs/data/fmriprep xcp \
+--despike --lower-bpf 0.01 --upper-bpf 0.08 --participant_label $subid -p 36P -f 10 -w ${PWD}/.git/tmp/wkdir --nthreads 6 --cifti
 cd xcp
 7z a ../${subid}_${sesid}_xcp-0.1.2.zip xcp_d
 rm -rf prep .git/tmp/wkdir
