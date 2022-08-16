@@ -1,0 +1,27 @@
+# Docker image of DataLad for the CircleCI tests of BABS
+# ref: https://github.com/effigies/datalad-docker/blob/master/Dockerfile
+
+#FROM singularityware/singularity:v3.4.0 as build_singularity
+FROM continuumio/miniconda3:4.12.0
+
+#COPY --from=build_singularity /opt/Miniconda /opt/Miniconda
+
+ARG datalad_version
+#ENV datalad_version="0.17.2"
+
+RUN apt-get update
+
+# install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
+    # installing via `conda install -c conda-forge git-annex` was not successful...
+RUN apt-get install -y --no-install-recommends git-annex
+
+# install datalad + datalad-osf + datalad container:
+RUN pip install "datalad${datalad_version+==$datalad_version}" && \
+# ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
+    pip install datalad-osf && \
+    pip install datalad_container && \
+    rm -rf ~/.cache/pip/* && sync
+
+# configure git before using datalad:
+RUN git config --global user.email "test@example.com"
+RUN git config --global user.name "Test Name"
