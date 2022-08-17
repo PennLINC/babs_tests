@@ -200,6 +200,7 @@ bash code/merge_outputs.sh
 
 # =====================================================================
 # Step 6. Audit your runs
+# ^^ This is step will be deprecated and no need - there is no need to "bootstrap" for audit. Will work on this part in BABS.
 # =====================================================================
 # This is to check each subj-ses for successful run output, and/or collect some information from it.
 
