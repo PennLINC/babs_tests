@@ -4,9 +4,6 @@
 import argparse
 import os
 import subprocess
-#import nibabel
-#import numpy
-#from glob import glob
 
 def run(command, env={}):
     merged_env = os.environ

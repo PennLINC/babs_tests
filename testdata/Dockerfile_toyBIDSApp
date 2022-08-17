@@ -6,9 +6,14 @@ FROM alpine:3.16
 # install bash:
 RUN apk add --no-cache --upgrade bash
 
-CMD /bin/bash
-# now you can test if `expr 1 + 2` works.
+# install python and pip
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
 
-COPY toy_command.sh /toy_command.sh
-RUN chmod +x /toy_command.sh
-ENTRYPOINT ["/toy_command.sh"]
+ENV PYTHONPATH=""
+
+COPY toy_command.py /toy_command.py
+RUN chmod +x /toy_command.py
+ENTRYPOINT ["/toy_command.py"]
