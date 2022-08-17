@@ -1,10 +1,7 @@
 # Docker image of DataLad for the CircleCI tests of BABS
 # ref: https://github.com/effigies/datalad-docker/blob/master/Dockerfile
 
-#FROM singularityware/singularity:v3.4.0 as build_singularity
 FROM continuumio/miniconda3:4.12.0
-
-#COPY --from=build_singularity /opt/Miniconda /opt/Miniconda
 
 ARG datalad_version
 #ENV datalad_version="0.17.2"
