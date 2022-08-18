@@ -2,8 +2,8 @@
 
 # first, cd to the folder containing this bash script (and Dockerfile + toy_command.sh)
 
-version_tag="0.0.2.9000"
-version_tag_dash="0-0-2-9000"
+version_tag="0.0.3"
+version_tag_dash="0-0-3"
 
 # Build:
 # first, test building with regular builder: (later we will use multi-architecture builder to build the image and push)
@@ -25,6 +25,8 @@ docker run --rm -ti -v ${input_dir}:${mounted_input_dir} \
     --participant_label ${participant_label} \
     --session_label ${session_label}
 
+# also, check out without `--session_label`: it should count the entire participant's folder
+
 # Push to Docker Hub:
 # docker push chenyingzhao/toy_bids_app:${version_tag}  
 # ^^ this is for linux system; on Mac M1, we need to use multi-architecture, 
@@ -34,9 +36,10 @@ docker run --rm -ti -v ${input_dir}:${mounted_input_dir} \
 docker buildx use mybuilder   # use the builder which gives access to the new multi-architecture features. | created by: $ docker buildx create --name mybuilder
 docker buildx build --platform linux/amd64,linux/arm64 --push -t chenyingzhao/toy_bids_app:${version_tag} -f Dockerfile_toyBIDSApp .
 
-# Test on cubic cluster using singularity
+# Test on CUBIC cluster using singularity
 # first, build singularity image:
-cmd="singularity build toybidsapp-${version_tag}.sif docker://chenyingzhao/toy_bids_app:${version_tag}"
+cd /cbica/projects/RBC/chenying_practice/software
+singularity build toybidsapp-${version_tag}.sif docker://chenyingzhao/toy_bids_app:${version_tag}
 
 # test running:
 input_dir="/cbica/projects/RBC/chenying_practice/data_for_babs/NKI/data_hashedID_noDataLad"
@@ -50,5 +53,6 @@ singularity run --cleanenv -B ${PWD}  \
     --participant-label $participant_label \
     --session_label ${session_label}
 
+# also, check out without `--session_label`: it should count the entire participant's folder
 
 # -B means "bind"

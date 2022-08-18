@@ -25,8 +25,8 @@ xcpd_version_dot="0.1.2"
 xcpd_version_dash="0-1-2"
 xcpd_docker_path="pennlinc/xcp_d:${xcpd_version_dot}"
 
-toybidsapp_version_dot="0.0.2"
-toybidsapp_version_dash="0-0-2"
+toybidsapp_version_dot="0.0.3"
+toybidsapp_version_dash="0-0-3"
 toybidsapp_docker_path="chenyingzhao/toy_bids_app:${toybidsapp_version_dot}"
 # ++++++++++++++++++++++++++++++++++++
 

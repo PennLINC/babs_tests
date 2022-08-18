@@ -54,11 +54,19 @@ if args.session_label:
         session_label = args.session_label
     else:
         session_label = "ses-" + args.session_label
+    
+    print("session: " +session_label)
 
-print("session: " +session_label)
 
 if args.analysis_level == "participant":
-    dir_4analysis = os.path.join(args.bids_dir, participant_label, session_label)
+    if not args.participant_label:     # did not provide --participant_label
+        raise Exception("Requested running at participant level, but did not provide --participant_label!")
+
+    if args.session_label:
+        dir_4analysis = os.path.join(args.bids_dir, participant_label, session_label)
+    else:   # did not provide session label
+        print("did not provide --session_label; will count files in this participant's folder")
+        dir_4analysis = os.path.join(args.bids_dir, participant_label)
 
     # print(dir_4analysis)
     print('Recursively counting number of non-hidden files in: ', dir_4analysis)
@@ -81,7 +89,5 @@ if args.analysis_level == "participant":
         f.write(str(num_files))
 
 
-
-
-print()
+#print()
     

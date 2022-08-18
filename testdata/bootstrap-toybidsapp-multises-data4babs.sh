@@ -211,10 +211,10 @@ datalad run \
     -i code/toybidsapp_zip.sh \
     -i inputs/data/${subid}/${sesid}\
     -i inputs/data/*json \
-    -i pennlinc-containers/.datalad/environments/toybidsapp-0-0-2/image \
+    -i pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     --explicit \
-    -o ${subid}_${sesid}_toybidsapp-0.0.2.zip \
-    -m "toybidsapp:0.0.2 ${subid} ${sesid}" \
+    -o ${subid}_${sesid}_toybidsapp-0.0.3.zip \
+    -m "toybidsapp:0.0.3 ${subid} ${sesid}" \
     "bash ./code/toybidsapp_zip.sh ${subid} ${sesid}"
 
 # file content first -- does not need a lock, no interaction with Git
@@ -262,7 +262,7 @@ sed -i "s/ses-//g" ${filterfile}
 
 mkdir -p ${PWD}/.git/tmp/wdir
 singularity run --cleanenv -B ${PWD} \
-    pennlinc-containers/.datalad/environments/toybidsapp-0-0-2/image \
+    pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     inputs/data \
     prep \
     participant \
@@ -278,7 +278,7 @@ singularity run --cleanenv -B ${PWD} \
     --cifti-output 91k -v -v
 
 cd prep
-7z a ../${subid}_${sesid}_toybidsapp-0.0.2.zip toybidsapp
+7z a ../${subid}_${sesid}_toybidsapp-0.0.3.zip toybidsapp
 rm -rf prep .git/tmp/wkdir
 rm ${filterfile}
 
