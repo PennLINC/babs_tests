@@ -1,12 +1,10 @@
-# This is modified upon: TheWay/scripts/cubic/bootstrap-fmriprep-multises.sh
-
 # This workflow is derived from the Datalad Handbook
 
 # +++++++++++++++++++++++++++++++++++++++++++++++
 BIDSINPUT=$1  #  /full/path/to/BIDS - this is a datalad dataset of BIDS inputs
 CONTAINERDS=$2   # /full/path/to/qsiprep-container - this is a datalad dataset of container
 
-PROJECTROOT=${PWD}/fmriprep-multises
+PROJECTROOT=${PWD}/toybidsapp-multises
 # +++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -210,15 +208,14 @@ datalad get -n "inputs/data/${subid}"
 # Do the run!
 
 datalad run \
-    -i code/fmriprep_zip.sh \
+    -i code/toybidsapp_zip.sh \
     -i inputs/data/${subid}/${sesid}\
     -i inputs/data/*json \
-    -i pennlinc-containers/.datalad/environments/fmriprep-20-2-3/image \
+    -i pennlinc-containers/.datalad/environments/toybidsapp-0-0-2/image \
     --explicit \
-    -o ${subid}_${sesid}_fmriprep-20.2.3.zip \
-    -o ${subid}_${sesid}_freesurfer-20.2.3.zip \
-    -m "fmriprep:20.2.3 ${subid} ${sesid}" \
-    "bash ./code/fmriprep_zip.sh ${subid} ${sesid}"
+    -o ${subid}_${sesid}_toybidsapp-0.0.2.zip \
+    -m "toybidsapp:0.0.2 ${subid} ${sesid}" \
+    "bash ./code/toybidsapp_zip.sh ${subid} ${sesid}"
 
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
@@ -240,7 +237,7 @@ EOT
 
 chmod +x code/participant_job.sh
 
-cat > code/fmriprep_zip.sh << "EOT"
+cat > code/toybidsapp_zip.sh << "EOT"
 #!/bin/bash
 set -e -u -x
 
@@ -265,7 +262,7 @@ sed -i "s/ses-//g" ${filterfile}
 
 mkdir -p ${PWD}/.git/tmp/wdir
 singularity run --cleanenv -B ${PWD} \
-    pennlinc-containers/.datalad/environments/fmriprep-20-2-3/image \
+    pennlinc-containers/.datalad/environments/toybidsapp-0-0-2/image \
     inputs/data \
     prep \
     participant \
@@ -281,14 +278,13 @@ singularity run --cleanenv -B ${PWD} \
     --cifti-output 91k -v -v
 
 cd prep
-7z a ../${subid}_${sesid}_fmriprep-20.2.3.zip fmriprep
-7z a ../${subid}_${sesid}_freesurfer-20.2.3.zip freesurfer
+7z a ../${subid}_${sesid}_toybidsapp-0.0.2.zip toybidsapp
 rm -rf prep .git/tmp/wkdir
 rm ${filterfile}
 
 EOT
 
-chmod +x code/fmriprep_zip.sh
+chmod +x code/toybidsapp_zip.sh
 cp ${FREESURFER_HOME}/license.txt code/license.txt
 
 mkdir logs
@@ -316,7 +312,7 @@ cd merge_ds
 NBRANCHES=$(git branch -a | grep job- | sort | wc -l)
 echo "Found $NBRANCHES branches to merge"
 
-gitref=$(git show-ref master | cut -d ' ' -f1 | head -n 1)
+gitref=$(git show-ref main | cut -d ' ' -f1 | head -n 1)
 
 # query all branches for the most recent commit and check if it is identical.
 # Write all branch identifiers for jobs without outputs into a file.
@@ -348,7 +344,7 @@ do
     [[ ${num_branches} -lt ${endnum} ]] && endnum=${num_branches}
     branches=$(sed -n "${startnum},${endnum}p;$(expr ${endnum} + 1)q" code/has_results.txt)
     echo ${branches} > ${batch_file}
-    git merge -m "fmriprep results batch ${chunknum}/${num_chunks}" $(cat ${batch_file})
+    git merge -m "toybidsapp results batch ${chunknum}/${num_chunks}" $(cat ${batch_file})
 
 done
 
