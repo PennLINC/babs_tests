@@ -24,16 +24,20 @@ qsiprep_docker_path="pennbbl/qsiprep:${qsiprep_version_dot}"
 xcpd_version_dot="0.1.2"
 xcpd_version_dash="0-1-2"
 xcpd_docker_path="pennlinc/xcp_d:${xcpd_version_dot}"
+
+toybidsapp_version_dot="0.0.2"
+toybidsapp_version_dash="0-0-2"
+toybidsapp_docker_path="chenyingzhao/toy_bids_app:${toybidsapp_version_dot}"
 # ++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++
 # CHANGE FOR EACH RUN:
 folder_BIDS="/cbica/projects/RBC/RBC_EXEMPLARS/NKI" 
-bidsapp="xcp"    # e.g., qsiprep, fmriprep, xcp (without d!!)
-bidsapp_version_dot=${xcpd_version_dot}    # e.g., x.x.x
-bidsapp_version_dash=${xcpd_version_dash}     # e.g., x-x-x
-docker_path=${xcpd_docker_path}   # e.g., pennbbl/qsiprep:x.x.x
-docker_link="docker://${xcpd_docker_path}"  # e.g., docker://pennbbl/qsiprep:x.x.x
+bidsapp="toybidsapp"    # e.g., qsiprep, fmriprep, xcp (without d!!), toybidsapp
+bidsapp_version_dot=${toybidsapp_version_dot}    # e.g., x.x.x
+bidsapp_version_dash=${toybidsapp_version_dash}     # e.g., x-x-x
+docker_path=${toybidsapp_docker_path}   # e.g., pennbbl/qsiprep:x.x.x
+docker_link="docker://${toybidsapp_docker_path}"  # e.g., docker://pennbbl/qsiprep:x.x.x
 
 folder_sif="${folder_root}/software"    # where the container's .sif file is. Sif file in this folder is temporary and will be deleted once the container dataset is created.
 msg_container="this is ${bidsapp} container"   # e.g., this is qsiprep container
