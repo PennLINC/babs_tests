@@ -210,7 +210,6 @@ datalad get -n "inputs/data/${subid}"
 datalad run \
     -i code/toybidsapp_zip.sh \
     -i inputs/data/${subid}/${sesid}\
-    -i inputs/data/*json \
     -i pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     --explicit \
     -o ${subid}_${sesid}_toybidsapp-0.0.3.zip \
@@ -244,48 +243,20 @@ set -e -u -x
 subid="$1"
 sesid="$2"
 
-# Create a filter file that only allows this session
-filterfile=${PWD}/${sesid}_filter.json
-echo "{" > ${filterfile}
-echo "'fmap': {'datatype': 'fmap'}," >> ${filterfile}
-echo "'bold': {'datatype': 'func', 'session': '$sesid', 'suffix': 'bold'}," >> ${filterfile}
-echo "'sbref': {'datatype': 'func', 'session': '$sesid', 'suffix': 'sbref'}," >> ${filterfile}
-echo "'flair': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'FLAIR'}," >> ${filterfile}
-echo "'t2w': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'T2w'}," >> ${filterfile}
-echo "'t1w': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'T1w'}," >> ${filterfile}
-echo "'roi': {'datatype': 'anat', 'session': '$sesid', 'suffix': 'roi'}" >> ${filterfile}
-echo "}" >> ${filterfile}
-
-# remove ses and get valid json
-sed -i "s/'/\"/g" ${filterfile}
-sed -i "s/ses-//g" ${filterfile}
-
 mkdir -p ${PWD}/.git/tmp/wdir
 singularity run --cleanenv -B ${PWD} \
     pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     inputs/data \
-    prep \
+    toybidsapp \
     participant \
-    -w ${PWD}/.git/tmp/wkdir \
-    --n_cpus 1 \
-    --stop-on-first-crash \
-    --fs-license-file code/license.txt \
-    --skip-bids-validation \
-    --bids-filter-file "${filterfile}" \
-    --output-spaces MNI152NLin6Asym:res-2 \
-    --participant-label "$subid" \
-    --force-bbr \
-    --cifti-output 91k -v -v
+    --participant-label ${subid} \
+    --session_label ${sesid}
 
-cd prep
 7z a ../${subid}_${sesid}_toybidsapp-0.0.3.zip toybidsapp
-rm -rf prep .git/tmp/wkdir
-rm ${filterfile}
 
 EOT
 
 chmod +x code/toybidsapp_zip.sh
-cp ${FREESURFER_HOME}/license.txt code/license.txt
 
 mkdir logs
 echo .SGE_datalad_lock >> .gitignore
