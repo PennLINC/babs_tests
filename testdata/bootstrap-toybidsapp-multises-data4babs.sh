@@ -243,7 +243,7 @@ set -e -u -x
 subid="$1"
 sesid="$2"
 
-mkdir -p ${PWD}/.git/tmp/wdir
+mkdir -p toybidsapp
 singularity run --cleanenv -B ${PWD} \
     pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     inputs/data \
@@ -252,7 +252,8 @@ singularity run --cleanenv -B ${PWD} \
     --participant-label ${subid} \
     --session_label ${sesid}
 
-7z a ../${subid}_${sesid}_toybidsapp-0.0.3.zip toybidsapp
+7z a ${subid}_${sesid}_toybidsapp-0.0.3.zip toybidsapp
+rm -rf toybidsapp    # the folder needs to be deleted, otherwise will be pushed back; only the zipped file should be pushed back
 
 EOT
 
@@ -352,7 +353,7 @@ eo_args="-e ${PWD}/logs -o ${PWD}/logs"
 for subject in ${SUBJECTS}; do
   SESSIONS=$(ls  inputs/data/$subject | grep ses- | cut -d '/' -f 1)
   for session in ${SESSIONS}; do
-    echo "qsub -cwd ${env_flags} -N fp${subject}_${session} ${eo_args} \
+    echo "qsub -cwd ${env_flags} -N toy${subject}_${session} ${eo_args} \
     ${PWD}/code/participant_job.sh \
     ${dssource} ${pushgitremote} ${subject} ${session}" >> code/qsub_calls.sh
   done

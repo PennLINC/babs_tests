@@ -174,6 +174,12 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
     # If `rm -rf` gives Permission error, try this first:
     # `chmod -R +w <foldername>`
 
+# Confirming the zip files are there, after jobs are finished (and said it's SUCCESS):
+    # way 1: after merging: you can see the list of zip files in `merge_ds` folder
+    # way 2: (might also need merging first), and after you cloned `output_ria`:
+        # when `ls`, you can see the list of zip files in the cloned folder
+        # you can even `git checkout <branch name>` to see each branch's output file
+        # bottom line: should not checkout branches in the original `output_ria`!!
 
 
 # STATUS for the NK exemplar data I played with (not useful anymore):
