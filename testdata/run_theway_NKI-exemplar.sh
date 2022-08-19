@@ -207,6 +207,21 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
 # Run:   # in `analysis` folder:
 bash code/merge_outputs.sh
 
+# =====================================================================
+# Unzip and see
+# =====================================================================
+
+# clone `output_ria`: | should not directly interact with `output_ria`; should clone and see
+datalad clone ria+file:///path/to/qsiprep/output_ria#~data qsiprep_outputs
+
+cd qsiprep_outputs
+datalad get <zip file name>
+datalad unlock <zip file name>
+unzip <zip file name>
+
+# after viewing it:
+rm -rf <the foldername got from zip file>
+datalad drop <zip file name>
 
 # =====================================================================
 # Step 6. Audit your runs
