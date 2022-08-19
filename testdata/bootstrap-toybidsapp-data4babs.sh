@@ -1,6 +1,11 @@
 ## NOTE ##
 # This workflow is derived from the Datalad Handbook
 
+# ++++++++++++++++++++++++++++++++++++++++++++++=
+BIDSINPUT=$1
+CONTAINERDS=$2
+
+PROJECTROOT=${PWD}/toybidsapp
 ## Ensure the environment is ready to bootstrap the analysis workspace
 # Check that we have conda installed
 #conda activate
@@ -23,7 +28,6 @@ set -e -u
 
 
 ## Set up the directory that will contain the necessary directories
-PROJECTROOT=${PWD}/fmriprep
 if [[ -d ${PROJECTROOT} ]]
 then
     echo ${PROJECTROOT} already exists
@@ -38,7 +42,6 @@ fi
 
 
 ## Check the BIDS input
-BIDSINPUT=$1
 if [[ -z ${BIDSINPUT} ]]
 then
     echo "Required argument is an identifier of the BIDS source"
@@ -74,9 +77,9 @@ cd analysis
 
 # create dedicated input and output locations. Results will be pushed into the
 # output sibling and the analysis will start with a clone from the input sibling.
-datalad create-sibling-ria -s output "${output_store}"
+datalad create-sibling-ria -s output "${output_store}" --new-store-ok
 pushremote=$(git remote get-url --push output)
-datalad create-sibling-ria -s input --storage-sibling off "${input_store}"
+datalad create-sibling-ria -s input --storage-sibling off "${input_store}" --new-store-ok
 
 # register the input dataset
 if [[ "${BIDS_INPUT_METHOD}" == "clone" ]]
@@ -99,10 +102,6 @@ then
     # exit 1
 fi
 
-set +u
-CONTAINERDS=$2
-set -u
-#if [[ ! -z "${CONTAINERDS}" ]]; then
 cd ${PROJECTROOT}
 datalad clone ${CONTAINERDS} pennlinc-containers
 ## Add the containers as a subdataset
@@ -185,15 +184,13 @@ datalad get -n "inputs/data/${subid}"
 # Do the run!
 
 datalad run \
-    -i code/fmriprep_zip.sh \
+    -i code/toybidsapp_zip.sh \
     -i inputs/data/${subid} \
-    -i inputs/data/*json \
-    -i pennlinc-containers/.datalad/environments/fmriprep-20-2-3/image \
+    -i pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
     --explicit \
-    -o ${subid}_fmriprep-20.2.3.zip \
-    -o ${subid}_freesurfer-20.2.3.zip \
-    -m "fmriprep:20.2.3 ${subid}" \
-    "bash ./code/fmriprep_zip.sh ${subid}"
+    -o ${subid}_toybidsapp-0.0.3.zip \
+    -m "toybidsapp:0.0.3 ${subid}" \
+    "bash ./code/toybidsapp_zip.sh ${subid}"
 
 # file content first -- does not need a lock, no interaction with Git
 datalad push --to output-storage
@@ -215,36 +212,26 @@ EOT
 
 chmod +x code/participant_job.sh
 
-cat > code/fmriprep_zip.sh << "EOT"
+cat > code/toybidsapp_zip.sh << "EOT"
 #!/bin/bash
 set -e -u -x
 
 subid="$1"
-mkdir -p ${PWD}/.git/tmp/wdir
-singularity run --cleanenv -B ${PWD} \
-    pennlinc-containers/.datalad/environments/fmriprep-20-2-3/image \
-    inputs/data \
-    prep \
-    participant \
-    -w ${PWD}/.git/tmp/wkdir \
-    --n_cpus 1 \
-    --stop-on-first-crash \
-    --fs-license-file code/license.txt \
-    --skip-bids-validation \
-    --output-spaces MNI152NLin6Asym:res-2 \
-    --participant-label "$subid" \
-    --force-bbr \
-    --cifti-output 91k -v -v
 
-cd prep
-7z a ../${subid}_fmriprep-20.2.3.zip fmriprep
-7z a ../${subid}_freesurfer-20.2.3.zip freesurfer
-rm -rf prep .git/tmp/wkdir
+mkdir -p toybidsapp
+singularity run --cleanenv -B ${PWD} \
+    pennlinc-containers/.datalad/environments/toybidsapp-0-0-3/image \
+    inputs/data \
+    toybidsapp \
+    participant \
+    --participant-label ${subid}
+
+7z a ${subid}_toybidsapp-0.0.3.zip toybidsapp
+rm -rf toybidsapp
 
 EOT
 
-chmod +x code/fmriprep_zip.sh
-cp ${FREESURFER_HOME}/license.txt code/license.txt
+chmod +x code/toybidsapp_zip.sh
 
 mkdir logs
 echo .SGE_datalad_lock >> .gitignore
@@ -273,7 +260,7 @@ dssource="${input_store}#$(datalad -f '{infos[dataset][id]}' wtf -S dataset)"
 pushgitremote=$(git remote get-url --push output)
 eo_args="-e ${PWD}/logs -o ${PWD}/logs"
 for subject in ${SUBJECTS}; do
-  echo "qsub -cwd ${env_flags} -N fp${subject} ${eo_args} \
+  echo "qsub -cwd ${env_flags} -N toy${subject} ${eo_args} \
   ${PWD}/code/participant_job.sh \
   ${dssource} ${pushgitremote} ${subject} " >> code/qsub_calls.sh
 done

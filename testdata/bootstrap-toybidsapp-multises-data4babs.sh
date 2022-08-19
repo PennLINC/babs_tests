@@ -351,7 +351,7 @@ dssource="${input_store}#$(datalad -f '{infos[dataset][id]}' wtf -S dataset)"
 pushgitremote=$(git remote get-url --push output)
 eo_args="-e ${PWD}/logs -o ${PWD}/logs"
 for subject in ${SUBJECTS}; do
-  SESSIONS=$(ls  inputs/data/$subject | grep ses- | cut -d '/' -f 1)
+  SESSIONS=$(ls  inputs/data/$subject | grep ses- | cut -d '/' -f 1)  # CHENYING'S NOTE: this will generate jobs for all sessions, which is not necessary the case in reality: e.g., no dwi data in that session --> should not apply qsiprep and qsub job
   for session in ${SESSIONS}; do
     echo "qsub -cwd ${env_flags} -N toy${subject}_${session} ${eo_args} \
     ${PWD}/code/participant_job.sh \
