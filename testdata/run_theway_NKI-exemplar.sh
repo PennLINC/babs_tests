@@ -176,10 +176,12 @@ cmd="bash bootstrap-${bidsapp}-multises-data4babs.sh ${folder_bids_input} ${fold
 
 # Confirming the zip files are there, after jobs are finished (and said it's SUCCESS):
     # way 1: after merging: you can see the list of zip files in `merge_ds` folder
-    # way 2: (might also need merging first), and after you cloned `output_ria`:
-        # when `ls`, you can see the list of zip files in the cloned folder
+    # way 2: (no need to merge first), and after you cloned `output_ria`:
+        # after merging: when `ls`, you can see the list of zip files in the cloned folder
         # you can even `git checkout <branch name>` to see each branch's output file
+            # but probably cannot unzip. If you want to unzip it, merge the output first, and no need to git checkout!
         # bottom line: should not checkout branches in the original `output_ria`!!
+        # if there is anything updated in the original `output_ria`, update cloned dataset with: `datalad update -s origin --how merge`  # confirm the sibling is called `origin` first!
 
 
 # STATUS for the NK exemplar data I played with (not useful anymore):
@@ -220,7 +222,7 @@ datalad unlock <zip file name>
 unzip <zip file name>
 
 # after viewing it:
-rm -rf <the foldername got from zip file>
+rm -rf <the foldername got from zip file>   # e.g., `toybidsapp`
 datalad drop <zip file name>
 
 # =====================================================================
