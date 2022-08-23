@@ -7,7 +7,10 @@ folder_to="/cbica/projects/RBC/chenying_practice/data_for_babs/NKI"
 my_foldername="raw_bids_exemplars"  # for datalad clone the bids data
 bids_hashing="data_hashedID_noDataLad"  # this folder is to run hashing subject ID and session ID. It's not tracked by DataLad
 bids_datalad="data_hashedID_bids"   # this folder is a copy of `bids_hashing`, but as it's hashed, it's tracked by DataLad
+qsiprep_multises="qsiprep-multises"
+fmriprep_multises="fmriprep-multises"
 
+bids_zeroout="data_zeroout_datalad"
 
 # find ppt that: 
 # 1. longitudinal; 
@@ -100,17 +103,48 @@ datalad save -m "copy dataset_description.json from original datalad dataset"
 # Go to `run_theway_NKI-exemplar.sh`
 
 # ===================================================
-# Step 3. Get ready to OSF
+# Step 3. Get ready to OSF - multi-ses & single-ses data
 # ===================================================
+# This is after QSIPrep and fMRIPrep has been run.
 
-# Step 3.1. zero-out using AFNI `3dcalc`
-list_niigz=$(find outputs/${subjid}/ -name *.nii.gz)
+# Step 3.1. hard copy the data out, so that the real images are not tracked by datalad
+# if it's original bids data:
+
+# needs to clone --> get & unlock first!
+
+
+cd ${folder_to}
+mkdir -p ${bids_zeroout}
+cmd="cp -rl ${bids_datalad} ${bids_zeroout}/" 
+cd ${bids_zeroout}
+# AFTER ENTERING THE FOLDER ${bids_zeroout}: move the data from the folder called ${bids_datalad}
+mv ${bids_datalad}/* ./   
+rm -rf ${bids_datalad} 
+
+# if it's BIDS App derivatives (e.g, from QSIPrep):
+# first, datalad clone the output_ria
+# then, copy out the zipped data
+# then, unzip & delete the zip files
+
+
+# Step 3.3. zero-out the images using AFNI `3dcalc`
+
+list_niigz=$(find . -name *.nii.gz)
 # e.g., fn="outputs/sub-A00082942/ses-BAS1/anat/sub-A00082942_ses-BAS1_T1w.nii.gz"
 for fn in ${list_niigz}
 do
     echo $fn
+    # using datalad run:
     # example: datalad run -i myimg.nii.gz -o myimg.nii.gz --explicit -m "zero out this image" "3dcalc -a myimg.nii.gz -prefix myimg.nii.gz -overwrite -expr 'a*0'"
-    datalad run -i ${fn} -o ${fn} --explicit -m "zero out image ${fn}" "3dcalc -a ${fn} -prefix ${fn} -overwrite -expr 'a*0'"
+    # example: datalad run -i ${fn} -o ${fn} --explicit -m "zero out image ${fn}" "3dcalc -a ${fn} -prefix ${fn} -overwrite -expr 'a*0'"
+
+    # not to use datalad run:
+    3dcalc -a ${fn} -prefix ${fn} -overwrite -expr 'a*0'
     echo ""
 done
 
+# Step 3.4. make a copy: to be used for cross-sectional data
+
+# Step 3.5. create a datalad dataset
+
+# Step 3.6. datalad push to osf, using the complicated command
