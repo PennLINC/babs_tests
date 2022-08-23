@@ -4,6 +4,8 @@
 FROM continuumio/miniconda3:4.12.0
 
 ARG datalad_version
+ARG datalad_osf_version
+ARG datalad_container_version
 #ENV datalad_version="0.17.2"
 
 RUN apt-get update
@@ -15,8 +17,8 @@ RUN apt-get install -y --no-install-recommends git-annex
 # install datalad + datalad-osf + datalad container:
 RUN pip install "datalad${datalad_version+==$datalad_version}" && \
 # ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
-    pip install datalad-osf && \
-    pip install datalad_container && \
+    pip install "datalad-osf${datalad_osf_version+==$datalad_osf_version}" && \
+    pip install "datalad_container${datalad_container_version+==$datalad_container_version}" && \
     rm -rf ~/.cache/pip/* && sync
 
 # configure git before using datalad:
