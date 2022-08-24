@@ -7,6 +7,9 @@
 folder_root="/cbica/projects/RBC/chenying_practice"
 folder_data4babs_NKI="${folder_root}/data_for_babs/NKI"
 
+foldername_dataset="data_multiSes_zeroout_datalad"
+osf_title="XXXXX"
+
 folder_rawBIDS_multises="${folder_data4babs_NKI}/data_hashedID_bids"
 # ++++++++++++++++++++++++++++++++++++++++++
 
@@ -30,15 +33,21 @@ conda activate mydatalad_chenying
 # =============================================
 # Step 1. raw BIDS data --> osf
 # =============================================
-cd $folder_rawBIDS_multises
-# datalad create-sibling-osf --title data4babs_rawBIDS_multises -s osf
-# if you're very sure, you can add `--public` to make the OSF project public
+cd $folder_data4babs_NKI
+cd $foldername_dataset
+
+datalad create-sibling-osf --title ${osf_title} -s osf \
+    --category data --tag reproducibility --public
 # ^^ --title <OSF project name>
 # ^^ -s <dataset sibling name>
-# https://osf.io/my5b7/   # <- this one failed: when `datalad clone`, the dataset is empty
-    # see this issue for more: https://github.com/datalad/datalad-osf/issues/160
 
-datalad create-sibling-osf --title data4babs_testout -s osf2 --category data --tag reproducibility --public
-# create-sibling-osf(ok): https://osf.io/fhm8b/
+datalad push --to osf
 
-datalad push --to osf2
+# Test out locally:
+# datalad clone osf://<osf_id>
+# cd <osf_id>
+# ls
+# # if there is any updates on osf:
+# datalad update -s origin --how merge   # first: check if the sibling's name is `origin`
+# # if you want to view the data:
+# datalad get xxxx    # otherwise, the data content hasn't been downloaded from osf...

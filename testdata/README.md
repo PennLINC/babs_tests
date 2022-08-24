@@ -30,6 +30,21 @@
             * sub-1/
             * sub-2/
 
+## foldername of the toy datalad dataset to be pushed to osf:
+|             | multi-ses | single-ses     |
+| :---        |    :----   |          :--- |
+| raw BIDS      | data_multiSes_zerout_datalad       |  data_singleSes_zerout_datalad  |
+| QSIPrep derivatives   | foldername       | foldername      |
+| fMRIPrep derivatives | foldername | foldername |
+
+## OSF links:
+|             | multi-ses | single-ses     |
+| :---        |    :----   |          :--- |
+| raw BIDS      | https://osf.io/j854e/       | https://osf.io/zd9a6/   |
+| QSIPrep derivatives   | link       | link      |
+| fMRIPrep derivatives | link | link |
+
+
 # Practice for learning The Way
 
 * where: /cbica/projects/RBC/chenying_practice
