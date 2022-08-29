@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# first, cd to the folder containing this bash script (and Dockerfile + toy_command.sh)
+# first, cd to the folder containing this bash script (and Dockerfile + toy_command.py)
 
 version_tag="0.0.3"
 version_tag_dash="0-0-3"
