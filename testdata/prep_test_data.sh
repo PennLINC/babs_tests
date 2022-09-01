@@ -105,6 +105,8 @@ datalad save -m "copy dataset_description.json from original datalad dataset"
 
 # ===================================================
 # Step 3. Get ready to OSF - multi-ses & single-ses data
+    # raw BIDS data: see below
+    # BIDS App derivative data (e.g., QSIPrep or fMRIPrep outputs): see `zero_out_derivatives.sh`
 # ===================================================
 # This is after QSIPrep and fMRIPrep has been run.
 
