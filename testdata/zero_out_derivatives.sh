@@ -32,6 +32,7 @@ cp -r ${clone_foldername}/*.zip ${multiSes_zerout}/
 cd ${multiSes_zerout}
 
 # Step 3.2. Unzip and delete the zip files
+# QSIPrep TODO: run below for QSIPrep derivatives data
 list_zipfiles=`ls *.zip`
 for zipfile in $list_zipfiles
 do

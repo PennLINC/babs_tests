@@ -13,8 +13,8 @@ fmriprep_multises="fmriprep-multises"
 bids_multiSes_zerout="data_multiSes_zerout_datalad"
 bids_singleSes_zerout="data_singleSes_zerout_datalad"
 
-# find ppt that: 
-# 1. longitudinal; 
+# find ppt that:
+# 1. longitudinal;
 # 2. for each session:
     # has anat/T1w
     # has func/valid BOLD files
@@ -105,8 +105,10 @@ datalad save -m "copy dataset_description.json from original datalad dataset"
 
 # ===================================================
 # Step 3. Get ready to OSF - multi-ses & single-ses data
-    # raw BIDS data: see below
-    # BIDS App derivative data (e.g., QSIPrep or fMRIPrep outputs): see `zero_out_derivatives.sh`
+    # raw BIDS data:
+        # see below
+    # BIDS App derivative data (e.g., QSIPrep or fMRIPrep outputs):
+        # see `zero_out_derivatives.sh`
 # ===================================================
 # This is after QSIPrep and fMRIPrep has been run.
 
@@ -147,7 +149,7 @@ do
     echo ""
 done
 
-# ^^ this will take a while; 
+# ^^ this will take a while;
 # after this is done, check the folder size - should be very minimal
     # check: each session folder: several MB at most
         # each .nii.gz should be x*100 KB (T1w images: ~100KB; bold images: ~300-600KB)

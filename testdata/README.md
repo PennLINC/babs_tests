@@ -8,11 +8,12 @@
         * `data_hashedID_bids`: now tracked by DataLad
         * `data_multiSes_zerout_datalad`: images are zero-out; still multi-ses data
         * `data_singleSes_zerout_datalad`: images are zero-out; only one session per subject was left
-    * `qsiprep*`: apply QSIPrep on the raw BIDS data. 
+    * `qsiprep*`: apply QSIPrep on the raw BIDS data.
     * `fmriprep*`: apply fMRIPrep on the raw BIDS data.
     * `xcp*`: apply XCP-D on the raw BIDS data.
-* Scripts: 
+* Scripts:
     * Overall: [prep_test_data.sh](prep_test_data.sh)
+        * when zero-ing the images out, for BIDS data derivatives (e.g., fMRIPrep), this is done in [zero_out_derivatives.sh](zero_out_derivatives.sh)
     * The Way part: [run_theway_NKI-exemplar.sh](run_theway_NKI-exemplar.sh)
         * bootstrap scripts: `bootstrap*.sh`, downloaded from `TheWay` GitHub repo; revised by Chenying to make sure run without error.
     * Pushing to OSF: [osf_siblings.sh](osf_siblings.sh)
