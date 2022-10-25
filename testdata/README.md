@@ -23,7 +23,7 @@
 | :---        |    :----   |          :--- |
 | raw BIDS      | data_multiSes_zerout_datalad       |  data_singleSes_zerout_datalad  |
 | QSIPrep derivatives   | qsiprep_outputs_multiSes_zerout_datalad       | qsiprep_outputs_singleSes_zerout_datalad      |
-| fMRIPrep derivatives | foldername | foldername |
+| fMRIPrep derivatives | fmriprep_outputs_multiSes_zerout_datalad | fmriprep_outputs_singleSes_zerout_datalad |
 
 ## OSF links and titles:
 |             | multi-ses | single-ses     |
@@ -31,6 +31,11 @@
 | raw BIDS      | https://osf.io/j854e/ <br>data4babs_rawBIDS_multiSes      | https://osf.io/zd9a6/<br>data4babs_rawBIDS_singleSes   |
 | QSIPrep derivatives   | https://osf.io/d3js6/<br>data4babs_qsiprepOutputs_multiSes       | https://osf.io/8t9sf/<br>data4babs_qsiprepOutputs_singleSes      |
 | fMRIPrep derivatives | https://osf.io/k9zw2/<br>data4babs_fmriprepOutputs_multiSes | https://osf.io/2jvub/<br>data4babs_fmriprepOutputs_singleSes |
+
+Notes:
+* fMRIPrep derivatives on OSF: all replaced with empty files to save space; this is for toy BIDS App to count the files. For real testing (really running the jobs), need to use real data anyway.
+* QSIPrep derivatives on OSF: images are zero-ed out; figures/ and *.h5 files are replaced with empty files
+
 
 # Create a toy BIDS App to test BABS
 * Scripts:
