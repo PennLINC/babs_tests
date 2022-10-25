@@ -13,7 +13,7 @@
     * `xcp*`: apply XCP-D on the raw BIDS data.
 * Scripts:
     * Overall: [prep_test_data.sh](prep_test_data.sh)
-        * when zero-ing the images out, for BIDS data derivatives (e.g., fMRIPrep), this is done in [zero_out_derivatives.sh](zero_out_derivatives.sh)
+        * when zero-ing the images out, for BIDS data derivatives (e.g., fMRIPrep), this is done in [zero_out_derivatives.sh](zero_out_derivatives.sh), and explained in [zero_out_derivatives.md](zero_out_derivatives.md)
     * The Way part: [run_theway_NKI-exemplar.sh](run_theway_NKI-exemplar.sh)
         * bootstrap scripts: `bootstrap*.sh`, downloaded from `TheWay` GitHub repo; revised by Chenying to make sure run without error.
     * Pushing to OSF: [osf_siblings.sh](osf_siblings.sh)
@@ -22,15 +22,15 @@
 |             | multi-ses | single-ses     |
 | :---        |    :----   |          :--- |
 | raw BIDS      | data_multiSes_zerout_datalad       |  data_singleSes_zerout_datalad  |
-| QSIPrep derivatives   | foldername       | foldername      |
+| QSIPrep derivatives   | qsiprep_outputs_multiSes_zerout_datalad       | qsiprep_outputs_singleSes_zerout_datalad      |
 | fMRIPrep derivatives | foldername | foldername |
 
-## OSF links:
+## OSF links and titles:
 |             | multi-ses | single-ses     |
-| :---        |    :----   |          :--- |
-| raw BIDS      | https://osf.io/j854e/       | https://osf.io/zd9a6/   |
-| QSIPrep derivatives   | link       | link      |
-| fMRIPrep derivatives | link | link |
+| :---        |    :----:   |          :---: |
+| raw BIDS      | https://osf.io/j854e/ <br>data4babs_rawBIDS_multiSes      | https://osf.io/zd9a6/<br>data4babs_rawBIDS_singleSes   |
+| QSIPrep derivatives   | https://osf.io/d3js6/<br>data4babs_qsiprepOutputs_multiSes       | https://osf.io/8t9sf/<br>data4babs_qsiprepOutputs_singleSes      |
+| fMRIPrep derivatives | https://osf.io/k9zw2/<br>data4babs_fmriprepOutputs_multiSes | https://osf.io/2jvub/<br>data4babs_fmriprepOutputs_singleSes |
 
 # Create a toy BIDS App to test BABS
 * Scripts:

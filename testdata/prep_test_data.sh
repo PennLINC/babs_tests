@@ -136,8 +136,7 @@ rm -rf .datalad .git .gitattributes   # ah, these were copied too..
 # Step 3.3. Remove identifiable info
 # Step 3.3.1 zero-out the images using AFNI `3dcalc`
 list_niigz=$(find . -name *.nii.gz)
-# e.g., fn="outputs/sub-A00082942/ses-BAS1/anat/sub-A00082942_ses-BAS1_T1w.nii.gz"
-for fn in ${list_niigz}
+for fn in ${list_niigz}  # relative path to the file
 do
     echo $fn
     # using datalad run:

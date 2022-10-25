@@ -7,10 +7,8 @@
 folder_root="/cbica/projects/RBC/chenying_practice"
 folder_data4babs_NKI="${folder_root}/data_for_babs/NKI"
 
-foldername_dataset="data_multiSes_zeroout_datalad"
-osf_title="XXXXX"
-
-folder_rawBIDS_multises="${folder_data4babs_NKI}/data_hashedID_bids"
+foldername_dataset="fmriprep_outputs_singleSes_zerout_datalad"   # TO change!
+osf_title="data4babs_fmriprepOutputs_singleSes"
 # ++++++++++++++++++++++++++++++++++++++++++
 
 
