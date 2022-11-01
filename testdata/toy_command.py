@@ -4,8 +4,8 @@
 import argparse
 import os
 import subprocess
-import shutil
-import tempfile
+# import shutil
+# import tempfile
 
 def run(command, env={}):
     merged_env = os.environ
@@ -68,26 +68,18 @@ if args.analysis_level == "participant":
     if not args.participant_label:     # did not provide --participant_label
         raise Exception("Requested running at participant level, but did not provide --participant_label!")
 
-    # check whether the input dataset is zipped or not; define `dir_4analysis`
-    if args.zipped is True:
-        print("Input dataset is zipped... Unzip to a temporary folder first...")
-        # `args.input_dir` is the zipped filename
-        # unzip to a temporary folder and get the foldername
-        temp_unzip_to = tempfile.mkdtemp()
-        shutil.unpack_archive(args.input_dir, temp_unzip_to)
-
-        # TODO: define `dir_4analysis``:
-
-    elif args.zipped is False:
+    if args.zipped is False:
+        # need to figure out the specific subj, specific session:
         if args.session_label:
             dir_4analysis = os.path.join(args.input_dir, participant_label, session_label)
         else:   # did not provide session label
             print("did not provide --session_label; will count files in this participant's folder")
             dir_4analysis = os.path.join(args.input_dir, participant_label)
-
-        temp_unzip_to = None
+    elif args.zipped is True:
+        # no need to figure out which dir to analyze - has been done in `participant_job.sh` in BABS
+        dir_4analysis = args.input_dir
     else:
-        print("invalid zipping type!")
+        raise Exception("invalid zipping type!")
 
     # print(dir_4analysis)
     print('Recursively counting number of non-hidden files in: ', dir_4analysis)
@@ -104,10 +96,6 @@ if args.analysis_level == "participant":
                 num_files += 1
 
     print(num_files)
-
-    # remove temporary folder:
-    if temp_unzip_to is not None:
-        shutil.rmtree(temp_unzip_to)
 
     # save the number into an output.csv:
     fn_output = os.path.join(args.output_dir, "num_nonhidden_files.txt")
