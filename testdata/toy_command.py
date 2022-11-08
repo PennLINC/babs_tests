@@ -1,8 +1,28 @@
 #!/usr/bin/env python3
 # ref: https://github.com/bids-apps/example/blob/master/run.py
 
+"""
+This is to count number of non-hidden files:
+- either for a BIDS dataset, # files in a subject (or session) 's directory
+- or zipped input dataset, # files in a subject (or session)'s zip file
+Please note that this is used with `participant_job.sh` in FAIRly big workflow.
+Therefore, `participant_job.sh` (but not this python script)
+ will unzip the input dataset if needed
+
+Parameters:
+------------
+zipped: --zipped or --no-zipped, depending on the input ds is
+
+
+Results:
+----------
+The final result (a text file that includes the count) will be saved to
+`<output_dir>/toybidsapp` directory.
+"""
+
 import argparse
 import os
+import os.path as op
 import subprocess
 # import shutil
 # import tempfile
@@ -43,6 +63,13 @@ parser.add_argument('--session_label', '--session-label', '--ses_label', '--ses-
 parser.add_argument('--zipped',
                     help="Whether the input dataset is zipped (--zipped) or not (--no-zipped).",
                     action=argparse.BooleanOptionalAction)
+parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="verbose_count",
+        action="count",
+        default=0,
+        help="increases log verbosity for each occurence")
 
 args = parser.parse_args()
 
@@ -62,6 +89,13 @@ if args.session_label:
         session_label = "ses-" + args.session_label
 
     print("session: " +session_label)
+
+# check and make output dir:
+if op.exists(args.output_dir) is False:
+    os.makedirs(args.output_dir)
+
+# verbose level - does not really affect anything:
+print("verbose level = " + str(args.verbose_count))
 
 # The meat:
 if args.analysis_level == "participant":
@@ -98,7 +132,10 @@ if args.analysis_level == "participant":
     print(num_files)
 
     # save the number into an output.csv:
-    fn_output = os.path.join(args.output_dir, "num_nonhidden_files.txt")
+    results_dir = op.join(args.output_dir, "toybidsapp")
+    if op.exists(results_dir) is False:
+        os.makedirs(results_dir)
+    fn_output = os.path.join(results_dir, "num_nonhidden_files.txt")
     with open(fn_output, 'w') as f:
         f.write(str(num_files))
 

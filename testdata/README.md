@@ -33,6 +33,9 @@
 | fMRIPrep derivatives | https://osf.io/k9zw2/<br>data4babs_fmriprepOutputs_multiSes | https://osf.io/2jvub/<br>data4babs_fmriprepOutputs_singleSes |
 
 Notes:
+* How to clone: `datalad clone osf://<id> <local_foldername>`
+    * make sure you are in a conda env that has datalad-osf installed
+    * and, make sure you also set up `datalad osf-credentials` (please provide osf token when asked)
 * fMRIPrep derivatives on OSF: all replaced with empty files to save space; this is for toy BIDS App to count the files. For real testing (really running the jobs), need to use real data anyway.
 * QSIPrep derivatives on OSF: images are zero-ed out; figures/ and *.h5 files are replaced with empty files
 

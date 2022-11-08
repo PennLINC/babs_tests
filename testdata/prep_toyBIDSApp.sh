@@ -2,8 +2,8 @@
 
 # first, cd to the folder containing this bash script (and Dockerfile + toy_command.py)
 
-version_tag="0.0.4"
-version_tag_dash="0-0-4"
+version_tag="0.0.5"
+version_tag_dash="0-0-5"
 
 # Build:
 # first, test building with regular builder: (later we will use multi-architecture builder to build the image and push)
@@ -26,7 +26,8 @@ docker run --rm -ti -v ${input_dir}:${mounted_input_dir} \
     ${mounted_input_dir} ${mounted_output_dir} participant \
     --participant_label ${participant_label} \
     --session_label ${session_label} \
-    --no-zipped
+    --no-zipped -v
+
     # expect n=21 if with `--session_label`
     # also, check out without `--session_label`: it should count the entire participant's folder
     # expect n=67
@@ -37,7 +38,8 @@ docker run --rm -ti -v ${input_dir_2}:${mounted_input_dir} \
     chenyingzhao/toy_bids_app:${version_tag} \
     ${mounted_input_dir} ${mounted_output_dir} participant \
     --participant_label ${participant_label} \
-    --zipped
+    --zipped -v
+
     # expect for # files in sub-01_ses-A_fmriprep*.zip: 174
 
 # to compare with:
@@ -68,8 +70,23 @@ singularity run --cleanenv -B ${PWD}  \
     $output_dir \
     participant \
     --participant-label $participant_label \
-    --session_label ${session_label}
+    --session_label ${session_label} \
+    --no-zipped \
+    -v
 
 # also, check out without `--session_label`: it should count the entire participant's folder
 
 # -B means "bind"
+
+# Add to a datalad dataset - local Mac computer:
+datalad create -D "Note about the container" toybidsapp-container-docker
+cd toybidsapp-container-docker
+datalad containers-add --url dhub://chenyingzhao/toy_bids_app:${version_tag} toybidsapp-${version_tag_dash}
+# ^^ note that it should be `dhub` if you want to pull from docker hub and build as docker image instead of singularity image
+
+# Add to a datalad dataset - CUBIC project BABS:
+cd ~/data
+singularity build toybidsapp-${version_tag}.sif docker://chenyingzhao/toy_bids_app:${version_tag}
+cd toybidsapp-container
+datalad containers-add --url /cbica/projects/BABS/data/toybidsapp-${version_tag}.sif toybidsapp-${version_tag_dash}
+rm /cbica/projects/BABS/data/toybidsapp-${version_tag}.sif
