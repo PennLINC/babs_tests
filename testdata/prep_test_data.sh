@@ -86,7 +86,7 @@ for file in `find . -type f`; do mv -v "$file" "${file/${ses_name}/${ses_name_ha
 # ===================================================
 # Step 2.1 Create DataLad dataset:
 cd ${folder_BABS_NKI}  # root folder
-datalad create ${bids_datalad}
+datalad create -c text2git ${bids_datalad}
 cp -r ${folder_to}/${bids_hashing}/* ${bids_datalad}
 cd ${bids_datalad}
 datalad save -m "add bids data"
