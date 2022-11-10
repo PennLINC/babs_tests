@@ -4,6 +4,7 @@
 # +++++++++++++++++++++++++++++++++++++++++++
 folder_from="/cbica/projects/RBC/RBC_EXEMPLARS/NKI/"
 folder_to="/cbica/projects/RBC/chenying_practice/data_for_babs/NKI"
+folder_BABS_NKI="/cbica/projects/BABS/data/testdata_NKI"
 my_foldername="raw_bids_exemplars"  # for datalad clone the bids data
 bids_hashing="data_hashedID_noDataLad"  # this folder is to run hashing subject ID and session ID. It's not tracked by DataLad
 bids_datalad="data_hashedID_bids"   # this folder is a copy of `bids_hashing`, but as it's hashed, it's tracked by DataLad
@@ -84,9 +85,9 @@ for file in `find . -type f`; do mv -v "$file" "${file/${ses_name}/${ses_name_ha
 # Step 2. Run FAIRly big workflow
 # ===================================================
 # Step 2.1 Create DataLad dataset:
-cd ${folder_to}  # root folder
-datalad create -c text2git ${bids_datalad}
-cp -r ${bids_hashing}/* ${bids_datalad}
+cd ${folder_BABS_NKI}  # root folder
+datalad create ${bids_datalad}
+cp -r ${folder_to}/${bids_hashing}/* ${bids_datalad}
 cd ${bids_datalad}
 datalad save -m "add bids data"
 
@@ -116,6 +117,9 @@ datalad save -m "copy dataset_description.json from original datalad dataset"
 # if it's original bids data:
 
 # needs to clone --> get & unlock first!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! TODO: below: ${bids_datalad} is no longer in `folder_to`, but in `folder_BABS_NKI`
+
 cd ${folder_to}
 datalad clone ${bids_datalad} ${bids_datalad}_cloned
 cd ${bids_datalad}_cloned

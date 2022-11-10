@@ -49,3 +49,31 @@ datalad push --to osf
 # datalad update -s origin --how merge   # first: check if the sibling's name is `origin`
 # # if you want to view the data:
 # datalad get xxxx    # otherwise, the data content hasn't been downloaded from osf...
+
+# ================================
+# after there is some problems in several files tracked by git-annex
+# re-generate the datalad-tracked folder
+# and push to osf
+# ================================
+cd data_multiSes_zerout_datalad    # or `datalad_singleSes_zerout_datalad`
+datalad get *
+datalad unlock *
+
+cd ..
+cp -rl data_multiSes_zerout_datalad/ data_multiSes_zerout_datalad_new/
+cd data_multiSes_zerout_datalad_new/
+rm -rf .datalad .git .gitattributes
+
+# create datalad dataset:
+datalad create -d . --force -D "Some description of this dataset"
+datalad save -m "add data"
+git-annex fsck    # double check
+datalad status
+
+# push to osf:
+datalad create-sibling-osf --title ${osf_title} -s osf \
+    --category data --tag reproducibility --public
+# ^^ --title <OSF project name>
+# ^^ -s <dataset sibling name>
+
+datalad push --to osf
