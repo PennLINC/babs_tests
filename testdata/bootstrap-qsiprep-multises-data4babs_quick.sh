@@ -236,6 +236,7 @@ singularity run --cleanenv -B ${PWD} \
 
 cd prep
 7z a ../${subid}_${sesid}_qsiprep-0.16.0RC3.zip qsiprep
+cd ..
 rm -rf prep .git/tmp/wdir
 rm ${filterfile}
 
