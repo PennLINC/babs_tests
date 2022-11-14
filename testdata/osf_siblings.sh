@@ -65,7 +65,9 @@ cd data_multiSes_zerout_datalad_new/
 rm -rf .datalad .git .gitattributes
 
 # create datalad dataset:
-datalad create -d . --force -D "Some description of this dataset"
+datalad create -c text2git -d . --force -D "Some description of this dataset"
+# ^^ added `-c text2git` on 11/10/22, need to update all the prepared ds...
+
 datalad save -m "add data"
 git-annex fsck    # double check
 datalad status

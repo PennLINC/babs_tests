@@ -171,7 +171,9 @@ cp -r ${bids_multiSes_zerout}/ ${bids_singleSes_zerout}
 # Step 3.5. create a datalad dataset
 foldername_dataset="??????"  # foldername of: the multi-/single-ses, raw bids/qsiprep/fmriprep folder, read to be datalad dataset
 cd $foldername_dataset
-datalad create -d . --force -D "Some description of this dataset"
+datalad create -c text2git -d . --force -D "Some description of this dataset"
+# ^^ added `-c text2git` on 11/10/22, need to update all the prepared ds...
+
 datalad save -m "adding xxxxx data"   # otherwise the data in this folder are untracked...
 datalad status      # make sure there is nothing more the save!
 
