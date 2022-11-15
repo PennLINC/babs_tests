@@ -117,10 +117,8 @@ datalad save -m "copy dataset_description.json from original datalad dataset"
 # if it's original bids data:
 
 # needs to clone --> get & unlock first!
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# !!! TODO: below: ${bids_datalad} is no longer in `folder_to`, but in `folder_BABS_NKI`
 
-cd ${folder_to}
+cd ${folder_BABS_NKI}
 datalad clone ${bids_datalad} ${bids_datalad}_cloned
 cd ${bids_datalad}_cloned
 datalad get *
@@ -128,9 +126,12 @@ datalad unlock *
 
 cd ..
 mkdir -p ${bids_multiSes_zerout}
-cp -rl ${bids_datalad}_cloned ${bids_multiSes_zerout}/    # I guess not to use `-l` might avoid the problem of also copying out those .git and .datalad
+cp -rl ${bids_datalad}_cloned/*.json ${bids_multiSes_zerout}/    # I guess not to use `-l` might avoid the problem of also copying out those .git and .datalad
+cp -rl ${bids_datalad}_cloned/sub-01/ ${bids_multiSes_zerout}/
+cp -rl ${bids_datalad}_cloned/sub-02/ ${bids_multiSes_zerout}/
 cd ${bids_multiSes_zerout}
-rm -rf .datalad .git .gitattributes   # ah, these were copied too..
+# if you directly copied the entire folder of `${bids_datalad}_cloned`:
+# $ rm -rf .datalad .git .gitattributes   # ah, these were copied too..
 
 # if it's BIDS App derivatives (e.g, from QSIPrep):
 # first, datalad clone the output_ria
@@ -162,7 +163,7 @@ done
 # VIM `dataset_description.json` AND CHANGE THE FIELD "Name" to "test_data_for_babs"
 
 # Step 3.4. make a copy: to be used for cross-sectional data
-cd ${folder_to}
+cd ${folder_BABS_NKI}
 cp -r ${bids_multiSes_zerout}/ ${bids_singleSes_zerout}
 # remove the sessions other than one session; remove the foldername of the session to keep
     # sub-01: keep ses-A
@@ -172,7 +173,7 @@ cp -r ${bids_multiSes_zerout}/ ${bids_singleSes_zerout}
 foldername_dataset="??????"  # foldername of: the multi-/single-ses, raw bids/qsiprep/fmriprep folder, read to be datalad dataset
 cd $foldername_dataset
 datalad create -c text2git -d . --force -D "Some description of this dataset"
-# ^^ added `-c text2git` on 11/10/22, need to update all the prepared ds...
+# ^^ added `-c text2git` on 11/10/22
 
 datalad save -m "adding xxxxx data"   # otherwise the data in this folder are untracked...
 datalad status      # make sure there is nothing more the save!

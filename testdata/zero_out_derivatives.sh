@@ -113,6 +113,8 @@ elif [[ "${bidsapp}" == "fmriprep"  ]]; then
     do
         rm $file_temp
         touch $file_temp
+        basename_temp=`basename "$file_temp"`
+        echo "this is file: ${basename_temp}" > $file_temp  # 'this is file: xxx.xxx'
     done
 fi
 
@@ -156,7 +158,8 @@ fi
 
 
 # Step 3.6 create a datalad dataset
-datalad create -d . --force -D "Some description of this dataset"
+datalad create -c text2git -d . --force -D "Some description of this dataset"
+# ^^ added `-c text2git` on 11/14/22, to re-run!!!
 datalad save -m "adding xxxxx data"   # otherwise the data in this folder are untracked...
 datalad status
 

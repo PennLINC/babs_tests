@@ -43,8 +43,9 @@ docker run --rm -ti -v ${input_dir_2}:${mounted_input_dir} \
     # expect for # files in sub-01_ses-A_fmriprep*.zip: 174
 
 # to compare with:
-# find ${test_dir} -not -path '*/.*' -type f | wc -l
+# find ${test_dir} -not -path '*/.*' ! -type d | wc -l
 # ^^: `-not -path '*/.*'` means does not count hidden files and directories; `wc -l` means count the numbers
+# ^^: `! -type d` means not to count folders, but files (and symlinks - data tracked by datalad...)
 
 # Push to Docker Hub:
 # docker push chenyingzhao/toy_bids_app:${version_tag}
