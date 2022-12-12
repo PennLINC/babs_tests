@@ -10,7 +10,7 @@ Where are the HBN data?
 - raw HBN data:
     - `/cbica/projects/RBC/RBC_RAWDATA/bidsdatasets/HBN`
 - existing log files (to check Node error from Nipype):
-    - `~/production/HBN/fmriprep-anat/analysis/logs` on RBC cubic project
+    - `/cbica/projects/RBC/production/HBN/fmriprep-anat/analysis/logs` on RBC cubic project
 - auditted csv (probably for fmriprep with FS ingressed part, not fmriprep-anat; however still can check out those failed ones)
     - `/cbica/projects/RBC/production/HBN/HBN_group_report.csv`
 
