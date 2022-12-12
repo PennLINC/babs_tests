@@ -69,6 +69,31 @@ category     -U non-deadlineusers -u rbc -l h_rt=86400,h_stack=256m,h_vmem=25G,t
 
 ```
 
+### Failed in `mris_curvature_stats`:
+```
+$ tail -20 fpsub-NDARKA085YRG.o2221072
+                 Outputting results using filestem   [ ../stats/lh.curv.stats ]
+             Toggling save flag on curvature files                       [ ok ]
+                                   Setting surface [ sub-NDARKA085YRG/lh.smoothwm ]
+                                Reading surface...                       [ ok ]
+mris_curvature_stats: Could not open file '../stats/lh.curv.stats' for appending.
+
+No such file or directory
+Linux 211affn007 3.10.0-1062.el7.x86_64 #1 SMP Wed Aug 7 18:08:02 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+
+recon-all -s sub-NDARKA085YRG exited with ERRORS at Fri Nov 25 14:28:42 EST 2022
+
+For more details, see the log file /scratch/rbc/SGE_2221072/job-2221072-sub-NDARKA085YRG/ds/prep/freesurfer/sub-NDARKA085YRG/scripts/recon-all-lh.log
+To report a problem, see http://surfer.nmr.mgh.harvard.edu/fswiki/BugReporting
+
+Standard error:
+
+Return code: 1
+
+221125-14:28:44,324 cli ERROR:
+	 Preprocessing did not finish successfully. Errors occurred while processing data from participants: NDARKA085YRG (1). Check the HTML reports for details.
+```
+
 ### Stalled in `autorecon`:
 Other example job ID in this category:
 - 9638602
