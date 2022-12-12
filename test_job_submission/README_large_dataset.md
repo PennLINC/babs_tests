@@ -15,12 +15,19 @@ Where are the HBN data?
     - `/cbica/projects/RBC/production/HBN/HBN_group_report.csv`
 
 ## Example failed or stalled jobs
-### Failed:
+### Failed due to `Cannot allocate memory`:
 Other example job ID in this category:
 - to be added...
 
+1. check `.o`:
+Note: Information in last line is NOT specific! "Cannot allocate memory" actually shows up in #14 line from the bottom.
 ```
-$ tail fpsub-NDARNM147CG2.o9639662
+$ tail -15 fpsub-NDARNM147CG2.o9639662
+Excessive topologic defect encountered: could not allocate -608163293 edges for retessellation
+Cannot allocate memory
+Linux 2115fmn043 3.10.0-1062.el7.x86_64 #1 SMP Wed Aug 7 18:08:02 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+
+recon-all -s sub-NDARNM147CG2 exited with ERRORS at Fri Mar 25 21:38:25 EDT 2022
 
 For more details, see the log file /scratch/rbc/SGE_9639662/job-9639662-sub-NDARNM147CG2/ds/prep/freesurfer/sub-NDARNM147CG2/scripts/recon-all-lh.log
 To report a problem, see http://surfer.nmr.mgh.harvard.edu/fswiki/BugReporting
@@ -31,7 +38,10 @@ Return code: 1
 
 220325-21:38:27,398 cli ERROR:
 	 Preprocessing did not finish successfully. Errors occurred while processing data from participants: NDARNM147CG2 (1). Check the HTML reports for details.
+```
 
+2. Check `.e`: does not contain specific message..
+```
 $ tail fpsub-NDARNM147CG2.e9639662
 [INFO] Fetching updates for Dataset(/scratch/rbc/SGE_9639662/job-9639662-sub-NDARNM147CG2/ds/pennlinc-containers)
 [INFO] == Command start (output follows) =====
@@ -44,8 +54,11 @@ https://fmriprep.readthedocs.io/en/latest/faq.html#upgrading
 [INFO] == Command exit (modification check follows) =====
 CommandError: 'bash ./code/fmriprep_zip.sh sub-NDARNM147CG2' failed with exitcode 1 under /scratch/rbc/SGE_9639662/job-9639662-sub-NDARNM147CG2/ds
 
-# ^^ "CommandError" is sth being detected by audit file
+```
+^^ "CommandError" is sth being detected by audit file, however, message is not specific.
 
+3. Check `qacct`:
+```
 $ qacct -j 9639662 -u rbc
 ...
 qsub_time    Tue Mar 22 13:45:55 2022
@@ -122,3 +135,6 @@ exit_status  137                  (Killed)
 category     -U non-deadlineusers -u rbc -l h_stack=256m,h_vmem=90G,tmpfree=200G
 ```
 So this job was probably stuck and running for 4 days, and someone killed it.
+
+### Other stalled jobs and got killed due to exceeding `h_rt`:
+- fpsub-NDARJP304NK1.e9639520
