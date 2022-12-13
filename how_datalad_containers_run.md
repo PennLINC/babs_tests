@@ -2,6 +2,7 @@ This markdown file describes how `datalad containers-run` works, esp re: `call-f
 
 # Where is the information `call-fmt` saved?
 
+* In short, probably in `.datalad/config` -> `cmdexec` for that container
 * source code of `datalad containers-add`: [here](https://github.com/datalad/datalad-container/blob/master/datalad_container/containers_add.py#L168)
 * It should in: `<container_dataset>/.datalad/config`; just `cat` this config file and see. For more, please check out the jupyter notebook: `how_datalad_containers_add_call-fmt.ipynb`.
     * There will be a key called `cmdexec`. Under what conditions will this be set?
@@ -9,7 +10,7 @@ This markdown file describes how `datalad containers-run` works, esp re: `call-f
         * If it's not provided, when the container's url starts with `shub://` or `dhub://`, datalad will also make a guess of the `call-fmt`,
     * Then, the `call-fmt` will be saved as a key called `cmdexec` (source code [here](https://github.com/datalad/datalad-container/blob/master/datalad_container/containers_add.py#L319))
         * If loading it into python, you can get a `dict` object.
-    
+
 * How to find the full list of config files:
 
 ```python
@@ -34,3 +35,23 @@ ds.config
     * If not, it will make a guess: `cmd = container['path'] + ' ' + cmd`
         * example `container['path']`: `pennlinc-containers/.datalad/environments/qsiprep-0-16-0RC3/image'`
 * After necessary command is set up, it will `run_command()` (a function from `datalad.core.local.run`)
+
+# ReproNim/containers:
+- github repo: https://github.com/ReproNim/containers
+- to clone:
+    - `datalad clone ///repronim/containers`
+- configurations of containers:
+    - `cat .datalad/config`
+
+```
+...
+[datalad "containers.bids-validator"]
+	cmdexec = {img_dspath}/scripts/singularity_cmd run {img} {cmd}
+	image = images/bids/bids-validator--1.9.9.sing
+	updateurl = shub://ReproNim/containers:bids-validator--1.5.4
+...
+```
+
+- example run:
+    - `datalad containers-run -n bids-validator -- --help`
+        - here, `--help` goes into the container, i.e., flags for the container
