@@ -8,7 +8,9 @@ Note: `--anat-only` is also managed by Nipype, so we can see the Node error mess
 
 Where are the HBN data?
 - raw HBN data:
-    - `/cbica/projects/RBC/RBC_RAWDATA/bidsdatasets/HBN`
+    - RBC cubic project: `/cbica/projects/RBC/RBC_RAWDATA/bidsdatasets/HBN`
+    - and it's been cloned to BABS cubic projet too:
+      - `/cbica/projects/BABS/data/rawdata_HBN`
 - existing log files (to check Node error from Nipype):
     - `/cbica/projects/RBC/production/HBN/fmriprep-anat/analysis/logs` on RBC cubic project
 - auditted csv (probably for fmriprep with FS ingressed part, not fmriprep-anat; however still can check out those failed ones)
@@ -18,7 +20,7 @@ Where are the HBN data?
 There are in total of 3835 `*.o*` files in `fmriprep-anat` folder.
 
 Those with some keywords:
-| keywords  | show up in which file | last line of `.o`| last line of `.e` | `qacct`'s `failed` field |  log file counts in `fmriprep-anat` |
+| keywords  | show up in which file | last line of `.o`| last line of `.e` | `qacct`'s `failed` field |  log file counts in `fmriprep-anat` in HBN |
 | :-- | :--: | :--: | :--: | :--: | :--: |
 | "Exception: No T1w images found for" | in .e | "* Pre-run FreeSurfer's SUBJECTS_DIR: ..." not helpful | "CommandError: 'bash ..." not specific |? | 203 |
 | "Cannot allocate memory" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific|?| 148 |
@@ -27,15 +29,16 @@ Those with some keywords:
 | "fMRIPrep failed" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific|
 
 Without keywords:
-| case  | how to detect? |
-| :--: | :--: |
-| runtime is too long, either exceeding `h_rt` and got killed by cluster | check `qacct` -> field "failed": "37  : qmaster enforced h_rt, h_cpu, or h_vmem limit" | 
-| probably killed by the user | check `qacct` --> field "failed": "100 : assumedly after job"
+| case  | how to detect? | last line of `.o` |
+| :--: | :--: | :--: |
+| runtime is too long, either exceeding `h_rt` and got killed by cluster | check `qacct` -> field "failed": "37  : qmaster enforced h_rt, h_cpu, or h_vmem limit" | node name in `nipype`, e.g., `* fmriprep_wf. ... .autorecon3` |
+| probably killed by the user | check `qacct` --> field "failed": "100 : assumedly after job" | node name in `nipype`, e.g., `* _midthickness0`|
 
 Notes:
 - `qacct -o <username> -j <jobid OR jobname>`
 	- probably use `-j <jobid>` first, if multiple, check the one with matched `<jobname>`
 - `qacct` field `failed`: not necessarily 100% match, but print the code + text in field `failed` would be helpful
+
 
 ### Failed due to `No T1w images found`
 1. check `.o` (not helpful):
