@@ -44,9 +44,9 @@ babs_singularity_run:
 
 
 babs_zip_foldername:   # the foldername(s) to get zipped and the version string(s)
-    fmriprep: "20-2-3"     # should be the same as in `babs-init`'s argument `container_name`; better using "-" instead of "."
-    # freesurfer: "20-2-3"   # use the same as fmriprep
-    # ^^ # ADD THIS WHEN FULL RUN!
+    # fmriprep: "20-2-3"     # should be the same as in `babs-init`'s argument `container_name`; better using "-" instead of "."
+    freesurfer: "20-2-3"   # use the same as fmriprep
+    # ^^ # ADD THIS WHEN FULL RUN or --anat-only!
 
 # environment_variable:
 #     SINGULARITYENV_TEMPLATEFLOW_HOME: '~/.cache/templateflow'   # no need, default in babs
@@ -71,6 +71,10 @@ script_preamble: |
 # ^^ based on what you need on your cluster; some people even don't use `conda`...
 # for MSI, might need to add command e.g., "module_load"
 
+# TODO: incorporate below:
+compute_job_working_dir:
+    $CBICA_TMPDIR # or, "/cbica/comp_space/${source xxx}"
+
 # Below is to filter out subjects (or sessions)
 #   right now we only filter based on unzipped dataset
 required_files:
@@ -79,6 +83,16 @@ required_files:
         - "anat/*_T1w.nii*"
 
 # - "dwi/*_dwi.nii*"   # QSIPrep
+
+# Keywords for alerting messages in log files:
+keywords_alert:
+    o_file:
+        - "Cannot allocate memory"
+        - "mris_curvature_stats: Could not open file"
+        - "Numerical result out of range"
+        - "fMRIPrep failed"
+    # e_file:
+    #     - "xxxxx"
 
 
 # Below generic full list of options of fMRIPrep is based on fMRIPrep version xxxx.
