@@ -5,6 +5,7 @@ Note: `--anat-only` is also managed by Nipype, so we can see the Node error mess
 ## About HBN
 - HBN is a big dataset (# of subjects: 2600+ in RBC)
 - HBN is single-session dataset
+- folder size of its `fmriprep-anat`: 1.5T...
 
 Where are the HBN data?
 - raw HBN data:
@@ -16,23 +17,28 @@ Where are the HBN data?
 - auditted csv (probably for fmriprep with FS ingressed part, not fmriprep-anat; however still can check out those failed ones)
     - `/cbica/projects/RBC/production/HBN/HBN_group_report.csv`
 
+## Example successful jobs of fMRIPrep --anat-only (FreeSurfer)
+- sub-NDARNZ043VH0, took ~18.5h
+- sub-NDARJT730WP0, took 10.5h
+- ...
+
 ## Example failed or stalled jobs of fMRIPrep --anat-only (FreeSurfer)
 There are in total of 3835 `*.o*` files in `fmriprep-anat` folder.
 
 Those with some keywords:
-| keywords  | show up in which file | last line of `.o`| last line of `.e` | `qacct`'s `failed` field |  log file counts in `fmriprep-anat` in HBN |
-| :-- | :--: | :--: | :--: | :--: | :--: |
-| "Exception: No T1w images found for" | in .e | "* Pre-run FreeSurfer's SUBJECTS_DIR: ..." not helpful | "CommandError: 'bash ..." not specific |? | 203 |
-| "Cannot allocate memory" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific|?| 148 |
-| "mris_curvature_stats: Could not open file" | in .o | "Preprocessing did not finish successfully. ..." no specific | "CommandError: 'bash ..." not specific | ?| few | 
-| "Numerical result out of range" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific | 0 | few |
-| "fMRIPrep failed" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific|
+| keywords  | show up in which file | last line of `.o`| last line of `.e` | `qacct`'s `failed` field |  log file counts in `fmriprep-anat` in HBN | example HBN sub-id |
+| :-- | :--: | :--: | :--: | :--: | :--: | :--:|
+| "Exception: No T1w images found for" | in .e | "* Pre-run FreeSurfer's SUBJECTS_DIR: ..." not helpful | "CommandError: 'bash ..." not specific |? | 203 | sub-NDARMG405RZK |
+| "Cannot allocate memory" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific|?| 148 | sub-NDARNM147CG2 |
+| "mris_curvature_stats: Could not open file" | in .o | "Preprocessing did not finish successfully. ..." no specific | "CommandError: 'bash ..." not specific | ?| few | sub-NDARKA085YRG |
+| "Numerical result out of range" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific | 0 | few | sub-NDARNK064DXY |
+| "fMRIPrep failed" | in .o | "Preprocessing did not finish successfully. ..." not specific | "CommandError: 'bash ..." not specific| ? | ? | sub-NDARZZ740MLM (however, this subject was finally succeeded (probably fixed?)|
 
 Without keywords:
-| case  | how to detect? | last line of `.o` |
-| :--: | :--: | :--: |
-| runtime is too long, either exceeding `h_rt` and got killed by cluster | check `qacct` -> field "failed": "37  : qmaster enforced h_rt, h_cpu, or h_vmem limit" | node name in `nipype`, e.g., `* fmriprep_wf. ... .autorecon3` |
-| probably killed by the user | check `qacct` --> field "failed": "100 : assumedly after job" | node name in `nipype`, e.g., `* _midthickness0`|
+| case  | how to detect? | last line of `.o` | example HBN sub-id |
+| :--: | :--: | :--: | :--: |
+| runtime is too long, either exceeding `h_rt` and got killed by cluster | check `qacct` -> field "failed": "37  : qmaster enforced h_rt, h_cpu, or h_vmem limit" | node name in `nipype`, e.g., `* fmriprep_wf. ... .autorecon3` | sub-NDARHK598YJC, if `h_rt` is 1d |
+| probably killed by the user | check `qacct` --> field "failed": "100 : assumedly after job" | node name in `nipype`, e.g., `* _midthickness0`| sub-NDARGL085RTW, if no limit of `h_rt` and killed by user|
 
 Notes:
 - `qacct -o <username> -j <jobid OR jobname>`
