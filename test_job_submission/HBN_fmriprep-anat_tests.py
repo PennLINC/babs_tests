@@ -41,18 +41,23 @@ with pd.option_context('display.max_rows', None,
                        "display.max_colwidth", None): 
     print(df_submitted["last_line_o_file"])
 
+with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.width', 120):   # default is 80 characters...
+    print(df.head())    # first 5 rows
+
 # running jobs:
 with pd.option_context('display.max_rows', None,
                        'display.max_columns', None,
                        'display.width', 120):   # default is 80 characters...
     print(print(df.iloc[900:910]))
 
-# failed jobs: ----------------------
-df_failed = df.loc[df["is_failed"]==True]
-with pd.option_context('display.max_rows', None,
-                       'display.max_columns', None,
-                       'display.width', 120):   # default is 80 characters...
-    print(df_failed)
+# # failed jobs: (quite a few, though as expected; commented now) ----------------------
+# df_failed = df.loc[df["is_failed"]==True]
+# with pd.option_context('display.max_rows', None,
+#                        'display.max_columns', None,
+#                        'display.width', 120):   # default is 80 characters...
+#     print(df_failed)
 
 # .o file: Excessive topologic defect encountered # also: Cannot allocate memory:
 # sub-NDARAC853DTE   # as in RBC
