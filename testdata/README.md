@@ -125,3 +125,8 @@ This includes DataLad etc.
 * where: /cbica/projects/RBC/chenying_practice
 * which dataset: NKI exemplar
 * RBC subject ID: the first 30 participants in NKI exemplar
+
+# Move to BABS:
+- datalad dataset:
+    - if on OSF: can directly delete the dl ds on RBC
+    - if not on OSF or cannot be on OSF, better to copy the plain files to BABS, and re-create a datalad dataset there
