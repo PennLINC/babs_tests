@@ -3,14 +3,14 @@
     * raw BIDS data in RBC cubic project: `/cbica/projects/RBC/chenying_practice/data_for_babs/NKI`
         * From 2 NKI (longitudinal) subjects (part of the NKI exemplar dataset so QSIPrep, fMRIPrep etc have been tested and successfully finished without error)
             * each has 3 sessions; each session has `fmri`; only one session does not have `dwi`. The used NKI IDs are not saved in this repo (i.e., not public)
-        * `raw_bids_exemplars`: this is datalad sibling of original folder: /cbica/projects/RBC/RBC_EXEMPLARS/NKI/
-        * `data_hashedID_noDataLad`: data with hashed subject ID and session ID; before tracking with DataLad
+        * `raw_bids_exemplars`: this is datalad sibling of original folder: /cbica/projects/RBC/RBC_EXEMPLARS/NKI/. <-- THIS IS MOVED???
+
     * raw BIDS data below is in BABS cubic project: `/cbica/projects/BABS/data/testdata_NKI/`
-        * `data_hashedID_bids`: now tracked by DataLad
-        * `data_multiSes_zerout_datalad`: images are zero-out; still multi-ses data
-        * `data_singleSes_zerout_datalad`: images are zero-out; only one session per subject was left
-        * Note: anything in the RBC project that has similar name: not used anymore, probably has some issue.
-    * BIDS data derivatives: in RBC cubic project: `/cbica/projects/RBC/chenying_practice/
+        * `data_hashedID_noDataLad`: data with hashed subject ID and session ID; before tracking with DataLad. This was originally prepared in RBC cubic proj, but moved to BABS cubic proj.
+        * `data_hashedID_bids`: now tracked by DataLad. As the images are real, this dataset should not be public. It's used to apply real BIDS App (e.g., fMRIPrep) to test out BABS.
+        * `data_multiSes_zerout_datalad`: images are zero-out; still multi-ses data. This ds has also been pushed to OSF.
+        * `data_singleSes_zerout_datalad`: images are zero-out; only one session per subject was left. This ds has also been pushed to OSF.
+    * BIDS data derivatives: in RBC cubic project: `/cbica/projects/RBC/chenying_practice/`
         * `qsiprep*`: apply QSIPrep on the raw BIDS data.
         * `fmriprep*`: apply fMRIPrep on the raw BIDS data.
         * `xcp*`: apply XCP-D on the raw BIDS data.

@@ -30,7 +30,7 @@ subjid_hash="YYYYYYY"   # CHANGE HERE! | e.g., sub-01
 # =====================================================
 # Step 1.1 Copy necessary data out and get ready for hashing
 ## BELOW: ONLY DO IT ONCE:
-cd ${folder_to}
+cd ${folder_BABS_NKI}
 mkdir ${bids_hashing}   # the data with hashed ID will go here
 
 # clone: # because the original folder is NOT an RIA, not to include "ria+file//"....
