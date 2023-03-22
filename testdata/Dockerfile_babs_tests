@@ -5,14 +5,33 @@ ARG datalad_container_version
 #ENV datalad_version="0.17.2"
 
 # pre-built docker image:
-FROM quay.io/singularity/singularity:v3.11.0-slim-arm64 as build_singularity
-# !!!! TODO: delete `-arm64` !!!!
+FROM quay.io/singularity/singularity:v3.11.0-slim as build_singularity
 
 # base image:
 FROM continuumio/miniconda3:4.12.0
 
-
-
+# Add singularity: ------------------------
 COPY --from=build_singularity /usr/local/singularity /usr/local/singularity
+ENV PATH="/usr/local/singularity/bin:$PATH"
+# ^^ `singularity` is installed: `/usr/local/singularity/bin/singularity`
+# ^^ ref: https://github.com/singularityhub/singularity-docker/blob/v3.11.0-slim/Dockerfile
 
-RUN apt-get update
+# ENTRYPOINT ["/usr/local/singularity/bin/singularity"]
+
+# # Add datalad etc: -------------------------------
+# RUN apt-get update
+
+# # install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
+#     # installing via `conda install -c conda-forge git-annex` was not successful...
+# RUN apt-get install -y --no-install-recommends git-annex
+
+# # install datalad + datalad-osf + datalad container:
+# RUN pip install "datalad${datalad_version+==$datalad_version}" && \
+# # ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
+#     pip install "datalad-osf${datalad_osf_version+==$datalad_osf_version}" && \
+#     pip install "datalad_container${datalad_container_version+==$datalad_container_version}" && \
+#     rm -rf ~/.cache/pip/* && sync
+
+# # configure git before using datalad:
+# RUN git config --global user.email "test@example.com"
+# RUN git config --global user.name "Test Name"

@@ -11,8 +11,10 @@ docker_tag="datalad${datalad_version}_v2"
 # +++++++++++++++++++++++++++++++
 
 # build:
-docker build -t chenyingzhao/datalad:${docker_tag} -f Dockerfile_babs_tests \
+docker build -t pennlinc/babs_tests:${docker_tag} -f Dockerfile_babs_tests \
     --build-arg datalad_version=${datalad_version} \
     --build-arg datalad_osf_version=${datalad_osf_version} \
     --build-arg datalad_container_version=${datalad_container_version} . 
 
+# test:
+# docker run --rm -ti pennlinc/babs_tests:${docker_tag}
