@@ -1,0 +1,18 @@
+# Docker image used for the CircleCI tests of BABS
+ARG datalad_version
+ARG datalad_osf_version
+ARG datalad_container_version
+#ENV datalad_version="0.17.2"
+
+# pre-built docker image:
+FROM quay.io/singularity/singularity:v3.11.0-slim-arm64 as build_singularity
+# !!!! TODO: delete `-arm64` !!!!
+
+# base image:
+FROM continuumio/miniconda3:4.12.0
+
+
+
+COPY --from=build_singularity /usr/local/singularity /usr/local/singularity
+
+RUN apt-get update
