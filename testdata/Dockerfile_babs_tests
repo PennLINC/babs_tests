@@ -1,37 +1,36 @@
 # Docker image used for the CircleCI tests of BABS
+
+# arguments:
 ARG datalad_version
 ARG datalad_osf_version
 ARG datalad_container_version
-#ENV datalad_version="0.17.2"
-
-# pre-built docker image:
-FROM quay.io/singularity/singularity:v3.11.0-slim as build_singularity
 
 # base image:
-FROM continuumio/miniconda3:4.12.0
+FROM pennbbl/qsiprep-miniconda:23.3.1
 
 # Add singularity: ------------------------
-COPY --from=build_singularity /usr/local/singularity /usr/local/singularity
-ENV PATH="/usr/local/singularity/bin:$PATH"
-# ^^ `singularity` is installed: `/usr/local/singularity/bin/singularity`
-# ^^ ref: https://github.com/singularityhub/singularity-docker/blob/v3.11.0-slim/Dockerfile
+RUN apt-get update
+RUN apt-get install -y singularity-container
 
-# ENTRYPOINT ["/usr/local/singularity/bin/singularity"]
 
-# # Add datalad etc: -------------------------------
-# RUN apt-get update
+# Add datalad etc: -------------------------------
+RUN apt-get update
 
-# # install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
-#     # installing via `conda install -c conda-forge git-annex` was not successful...
-# RUN apt-get install -y --no-install-recommends git-annex
+# install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
+    # installing via `conda install -c conda-forge git-annex` was not successful...
+RUN apt-get install -y --no-install-recommends git-annex
 
-# # install datalad + datalad-osf + datalad container:
-# RUN pip install "datalad${datalad_version+==$datalad_version}" && \
-# # ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
-#     pip install "datalad-osf${datalad_osf_version+==$datalad_osf_version}" && \
-#     pip install "datalad_container${datalad_container_version+==$datalad_container_version}" && \
-#     rm -rf ~/.cache/pip/* && sync
+# install datalad + datalad-osf + datalad container:
+RUN sudo -H /usr/local/miniconda/bin/pip install "datalad${datalad_version+==$datalad_version}" && \
+# ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
+    /usr/local/miniconda/bin/pip install "datalad-osf${datalad_osf_version+==$datalad_osf_version}" && \
+    /usr/local/miniconda/bin/pip install "datalad_container${datalad_container_version+==$datalad_container_version}"
+#    && rm -rf ~/.cache/pip/* && sync
+#   warning when installing these python packages when docker build:
+#       WARNING: The directory '/home/qsiprep/.cache/pip' or its parent directory is not owned or is not writable by the current user.
+#       The cache has been disabled. Check the permissions and owner of that directory.
+#       If executing pip with sudo, you should use sudo's -H flag.
 
-# # configure git before using datalad:
-# RUN git config --global user.email "test@example.com"
-# RUN git config --global user.name "Test Name"
+# configure git before using datalad:
+RUN git config --global user.email "test@example.com"
+RUN git config --global user.name "Test Name"
