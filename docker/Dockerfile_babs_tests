@@ -22,8 +22,8 @@ RUN apt-get update && \
                     libgomp1
 
 # Add singularity: ------------------------
-RUN apt-get update
-RUN apt-get install -y singularity-container
+RUN apt-get update && \
+    apt-get install -y singularity-container
 
 
 # Installing and setting up miniconda:
@@ -47,11 +47,24 @@ ENV PATH="/usr/local/miniconda/bin:$PATH"
 
 # Add datalad etc: -------------------------------
 # ref: https://github.com/effigies/datalad-docker/blob/master/Dockerfile
-RUN apt-get update
 
-# install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
-    # installing via `conda install -c conda-forge git-annex` was not successful...
-RUN apt-get install -y --no-install-recommends git-annex
+# install git (upgrade it to latest version!):
+#   note: only `apt-get install -y git` is not enough! It won't be upgraded...
+#   first, `dist-upgrade` is probably needed for getting up-to-date `git`
+RUN apt-get dist-upgrade && \
+    # then, install `add-apt-repository`:
+    apt-get install -y software-properties-common && \
+    apt-get update && \
+    # then, add PPA repository:
+    add-apt-repository ppa:git-core/ppa -y && \
+    apt-get update && \
+    # finally, install git:
+    apt-get install -y git
+
+# install git-annex (latest version):
+#   `apt-get install -y --no-install-recommends git-annex`: cannot install latest git-annex...
+RUN conda install -c conda-forge git-annex -y && \
+    sync && conda clean --all -y && sync
 
 # install datalad + datalad-osf + datalad container:
 RUN /usr/local/miniconda/bin/pip install "datalad${datalad_version+==$datalad_version}" && \

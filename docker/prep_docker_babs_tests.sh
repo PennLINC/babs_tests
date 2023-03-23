@@ -8,7 +8,7 @@ datalad_version="0.17.2"
 datalad_osf_version="0.2.3.1"
 datalad_container_version="1.1.6"
 
-docker_tag="datalad${datalad_version}_v2"
+docker_tag="datalad${datalad_version}_v3"
 # +++++++++++++++++++++++++++++++
 
 # build:
