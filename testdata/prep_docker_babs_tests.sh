@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This is to build the docker image used for Circle CI tests of BABS
+# Please build it on a Linux machine, but not Mac M1 machine!!!
 
 # +++++++++++++++++++++++++++++++
 datalad_version="0.17.2"
@@ -18,3 +19,7 @@ docker build -t pennlinc/babs_tests:${docker_tag} -f Dockerfile_babs_tests \
 
 # test:
 # docker run --rm -ti pennlinc/babs_tests:${docker_tag}
+
+# push:
+# docker push pennlinc/babs_tests:${docker_tag}
+# ^^ this is for linux system; 

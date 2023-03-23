@@ -1,19 +1,52 @@
 # Docker image used for the CircleCI tests of BABS
 
-# arguments:
+# base image:
+FROM ubuntu:bionic-20230308
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+# ^^ so that can `source` a file.
+
+# arguments:   
+#   arguments have to be defined after `FROM`; otherwise commands using it ignore it and will install the latest version...
 ARG datalad_version
 ARG datalad_osf_version
 ARG datalad_container_version
 
-# base image:
-FROM pennbbl/qsiprep-miniconda:23.3.1
+# below is copied from `qsiprep-miniconda` Dockerfile, might not all necessary:
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+                    ca-certificates \
+                    curl \
+                    libblas-dev \
+                    liblapack-dev \
+                    build-essential \
+                    libgomp1
 
 # Add singularity: ------------------------
 RUN apt-get update
 RUN apt-get install -y singularity-container
 
 
+# Installing and setting up miniconda:
+# ref: qsiprep-miniconda; 
+#   path `-p /usr/local/miniconda` is the same as in `qsiprep-miniconda`, but not `continuumio/miniconda3`; latter one might be easier to handle
+RUN curl -sSLO https://repo.anaconda.com/miniconda/Miniconda3-py39_23.1.0-1-Linux-x86_64.sh && \
+    bash Miniconda3-py39_23.1.0-1-Linux-x86_64.sh -b -p /usr/local/miniconda && \
+    rm Miniconda3-py39_23.1.0-1-Linux-x86_64.sh
+
+# below ref: https://github.com/ContinuumIO/docker-images/blob/master/miniconda3/debian/Dockerfile
+RUN ln -s /usr/local/miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc && \
+    find /usr/local/miniconda/ -follow -type f -name '*.a' -delete && \
+    find /usr/local/miniconda/ -follow -type f -name '*.js.map' -delete && \
+    /usr/local/miniconda/bin/conda clean -afy
+
+RUN source ~/.bashrc
+ENV PATH="/usr/local/miniconda/bin:$PATH"
+# ^^ source or exporting PATH is needed: because did not use normal conda activate (following qsiprep-miniconda)
+
 # Add datalad etc: -------------------------------
+# ref: https://github.com/effigies/datalad-docker/blob/master/Dockerfile
 RUN apt-get update
 
 # install git-annex via apt-get install, as it's a Debian Linux system (make sure to `apt-get update` first!)
@@ -21,15 +54,11 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends git-annex
 
 # install datalad + datalad-osf + datalad container:
-RUN sudo -H /usr/local/miniconda/bin/pip install "datalad${datalad_version+==$datalad_version}" && \
+RUN /usr/local/miniconda/bin/pip install "datalad${datalad_version+==$datalad_version}" && \
 # ^^ means: e.g., pip install 'datalad==0.17.2' | DOES NOT WORK: RUN pip install 'datalad==${datalad_version}' && \
     /usr/local/miniconda/bin/pip install "datalad-osf${datalad_osf_version+==$datalad_osf_version}" && \
-    /usr/local/miniconda/bin/pip install "datalad_container${datalad_container_version+==$datalad_container_version}"
-#    && rm -rf ~/.cache/pip/* && sync
-#   warning when installing these python packages when docker build:
-#       WARNING: The directory '/home/qsiprep/.cache/pip' or its parent directory is not owned or is not writable by the current user.
-#       The cache has been disabled. Check the permissions and owner of that directory.
-#       If executing pip with sudo, you should use sudo's -H flag.
+    /usr/local/miniconda/bin/pip install "datalad_container${datalad_container_version+==$datalad_container_version}" && \
+    rm -rf ~/.cache/pip/* && sync
 
 # configure git before using datalad:
 RUN git config --global user.email "test@example.com"
