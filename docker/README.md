@@ -12,7 +12,13 @@ Available at [personal Docker Hub](https://hub.docker.com/r/chenyingzhao/datalad
 
 
 ## Toy BIDS App `toy_bids_app`
-Currently available at [personal Docker Hub](https://hub.docker.com/r/chenyingzhao/toy_bids_app). But will soon be moved to `pennlinc`'s Docker Hub.
+### Basic information
+* Where is the Docker image: Available at [`pennlinc` Docker Hub](https://hub.docker.com/r/pennlinc/toy_bids_app).
+* What it does: to count number of non-hidden files in a subject's directory(or a session's directory, when `--session-label` is specified). 
+* How to call it: see `--help`
+* What platform: Its Docker image can be run on both amd64 (Linux + probably Mac with Intel chip) and arm64 (Mac with M1 chip)
+
+### Source code:
 * Build and push: [prep_toyBIDSApp.sh](prep_toyBIDSApp.sh)
 * Dockerfile: [Dockerfile_toyBIDSApp](Dockerfile_toyBIDSApp)
     * using [toy_command.py](toy_command.py)
