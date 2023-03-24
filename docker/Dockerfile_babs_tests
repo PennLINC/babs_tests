@@ -76,3 +76,8 @@ RUN /usr/local/miniconda/bin/pip install "datalad${datalad_version+==$datalad_ve
 # configure git before using datalad:
 RUN git config --global user.email "test@example.com"
 RUN git config --global user.name "Test Name"
+
+# Copy the pre-built toybidsapp sif file into this docker image:
+WORKDIR /
+RUN mkdir singularity_images
+COPY toybidsapp_0.0.6.sif /singularity_images/

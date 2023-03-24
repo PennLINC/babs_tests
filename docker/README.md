@@ -5,6 +5,16 @@ Available at [`pennlinc` Docker Hub](https://hub.docker.com/r/pennlinc/babs_test
 * Build and push: [prep_docker_babs_tests.sh](prep_docker_babs_tests.sh)
 * Dockerfile: [Dockerfile_babs_tests](Dockerfile_babs_tests)
 
+### Tag logs
+* `datalad0.17.2_v4`: copied pre-built `toybidsapp_0.0.6.sif` into the docker image
+    * The sif file was prebuilt on CUBIC cluster, and saved in folder `/cbica/projects/BABS/toybidsapp_for_babs_tests`
+    * The sif file was built using command below:
+```
+toybidsapp_version="0.0.6"
+singularity build toybidsapp_${toybidsapp_version}.sif docker://pennlinc/toy_bids_app:${toybidsapp_version}
+```
+
+
 ### Deprecated: DataLad only, no singularity installed
 Available at [personal Docker Hub](https://hub.docker.com/r/chenyingzhao/datalad)
 * Build and push: [prep_docker_datalad.sh](prep_docker_datalad.sh)

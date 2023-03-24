@@ -7,10 +7,20 @@
 datalad_version="0.17.2"
 datalad_osf_version="0.2.3.1"
 datalad_container_version="1.1.6"
+toybidsapp_version="0.0.6"
 
-docker_tag="datalad${datalad_version}_v3"
+docker_tag="datalad${datalad_version}_v4"
 # +++++++++++++++++++++++++++++++
 
+# DO STEP BELOW ON CUBIC USING TRUSTABLE `SINGULARITY` + LINUX SYSTEM!
+#   do this on cubic: `/cbica/projects/BABS/toybidsapp_for_babs_tests`
+singularity build toybidsapp_${toybidsapp_version}.sif docker://pennlinc/toy_bids_app:${toybidsapp_version}
+
+# Then, download this sif file from cubic to local linux computer
+#   and save it to the current folder (as with `Dockerfile`)!
+
+
+# ON LOCAL LINUX COMPUTER:
 # build:
 docker build -t pennlinc/babs_tests:${docker_tag} -f Dockerfile_babs_tests \
     --build-arg datalad_version=${datalad_version} \
