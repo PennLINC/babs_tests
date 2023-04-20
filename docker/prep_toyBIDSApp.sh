@@ -2,8 +2,8 @@
 
 # first, cd to the folder containing this bash script (and Dockerfile + toy_command.py)
 
-version_tag="0.0.6"
-version_tag_dash="0-0-6"
+version_tag="0.0.7"
+version_tag_dash="0-0-7"
 
 # Build:
 # first, test building with regular builder: (later we will use multi-architecture builder to build the image and push)
@@ -26,7 +26,8 @@ docker run --rm -ti -v ${input_dir}:${mounted_input_dir} \
     ${mounted_input_dir} ${mounted_output_dir} participant \
     --participant_label ${participant_label} \
     --session_label ${session_label} \
-    --no-zipped -v
+    --no-zipped -v \
+    --dummy "2"
 
     # expect n=21 if with `--session_label`
     # also, check out without `--session_label`: it should count the entire participant's folder
@@ -40,7 +41,8 @@ docker run --rm -ti -v ${input_dir_2}:${mounted_input_dir} \
     --participant_label ${participant_label} \
     --zipped -v
 
-    # expect for # files in sub-01_ses-A_fmriprep*.zip: 174
+    # expect for # files (i.e., after unzipping `sub-01_ses-A_fmriprep*.zip` as `fmriprep` as $input_dir_2)
+    # 174
 
 # to compare with:
 # find ${test_dir} -not -path '*/.*' ! -type d | wc -l
