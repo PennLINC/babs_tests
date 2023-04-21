@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# ref: https://github.com/bids-apps/example/blob/master/run.py
+# Some code below was copied or modified from:
+# [An example BIDS App GitHub repository](https://github.com/bids-apps/example)
+# which has Apache License.
+# e.g., from this script: https://github.com/bids-apps/example/blob/master/run.py
+# See LICENSE for license for this toy BIDS App and license for `bids-apps/example`.
 
 """
 This is to count non-hidden files for:

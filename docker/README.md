@@ -32,3 +32,6 @@ Available at [personal Docker Hub](https://hub.docker.com/r/chenyingzhao/datalad
 * Build and push: [prep_toyBIDSApp.sh](prep_toyBIDSApp.sh)
 * Dockerfile: [Dockerfile_toyBIDSApp](Dockerfile_toyBIDSApp)
     * using [toy_command.py](toy_command.py)
+
+### LICENSE
+See [LICENSE](LICENSE).
