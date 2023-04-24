@@ -1,0 +1,10 @@
+# This defines a toy singularity image
+
+Bootstrap: docker
+From: alpine
+
+%environment
+    export MYVAR="Hello"
+
+%runscript
+    echo $MYVAR
