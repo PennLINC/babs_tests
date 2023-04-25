@@ -58,3 +58,50 @@ This also applies to `singularity run`, even if apptainer version was installed 
 $ singularity run --cleanenv --env "MYVAR=$MYVAR" toyenv.sif
 Something New
 ```
+
+## Expected `singularity run` for FreeSurfer and TemplateFlow
+Strategy does not change in BABS:
+* By default will handle `TEMPLATEFLOW_HOME`, if ${TEMPLATEFLOW_HOME} env var exists
+* if ${FREESURFER_LICENSE} shows up, need to act for FreeSurfer
+    * might change this to `${BABS_FREESURFER_LICENSE}`?
+
+Previous (`babs 0.0.2`):
+```
+export SINGULARITYENV_TEMPLATEFLOW_HOME=/TEMPLATEFLOW_HOME
+mkdir -p ${PWD}/.git/tmp/wkdir
+singularity run --cleanenv -B ${PWD},/test/templateflow_home:/TEMPLATEFLOW_HOME \
+        containers/.datalad/environments/fmriprep-20-2-3/image \
+        ...
+        --fs-license-file code/license.txt \
+```
+
+New: use `--env` (which is consistent across old and new version of singularity), instead of `export SINGULARITYENV_*`, as for new version of `singularity`, i.e., `apptainer`, it will use `export APPTAINERENV_*`, i.e., it will be depending on which version of `singularity` installed on the cluster!
+
+
+```
+mkdir -p ${PWD}/.git/tmp/wkdir
+singularity run --cleanenv \
+        -B ${PWD},/path/to/TEMPLATEFLOW_HOME:/TEMPLATEFLOW_HOME,/path/to/FREESURFER_HOME:/FREESURFER_HOME \
+        --env TEMPLATEFLOW_HOME=/TEMPLATEFLOW_HOME \
+        --env FREESURFER_HOME=/FREESURFER_HOME \
+        containers/.datalad/environments/fmriprep-20-2-3/image \
+        ...
+        --fs-license-file /FREESURFER_HOME/license.txt \
+```
+Here, 
+* `/path/to/TEMPLATEFLOW_HOME` is `${TEMPLATEFLOW_HOME}` on host;
+* `/path/to/FREESURFER_HOME` is `${FREESURFER_HOME}` on host.
+
+New option #2: just to bind FS and TemplateFlow same folder as in host (not to define the destination folder):
+--> risk:  host's env var path (can vary) overlapped with something in the bids app
+
+```
+mkdir -p ${PWD}/.git/tmp/wkdir
+singularity run --cleanenv \
+        -B ${PWD},/path/to/TEMPLATEFLOW_HOME,/path/to/FREESURFER_HOME \
+        --env "TEMPLATEFLOW_HOME=$TEMPLATEFLOW_HOME" \
+        --env "FREESURFER_HOME=$FREESURFER_HOME" \
+        containers/.datalad/environments/fmriprep-20-2-3/image \
+        ...
+        --fs-license-file /FREESURFER_HOME/license.txt \
+```
