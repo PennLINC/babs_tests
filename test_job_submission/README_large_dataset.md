@@ -40,7 +40,7 @@ Without keywords:
 | runtime is too long, either exceeding `h_rt` and got killed by cluster | check `qacct` -> field "failed": "37  : qmaster enforced h_rt, h_cpu, or h_vmem limit" | node name in `nipype`, e.g., `* fmriprep_wf. ... .autorecon3` | sub-NDARHK598YJC, if `h_rt` is 1d |
 | probably killed by the user | check `qacct` --> field "failed": "100 : assumedly after job" | node name in `nipype`, e.g., `* _midthickness0`| sub-NDARGL085RTW, if no limit of `h_rt` and killed by user|
 
-Notes:
+### Notes:
 - `qacct -o <username> -j <jobid OR jobname>`
 	- probably use `-j <jobid>` first, if multiple, check the one with matched `<jobname>`
     - Notes: sometimes Chenying also uses `-u <username>`, but she decided to use `-o` when implementing BABS... hmmm cannot remember the exact reason of doing so...
