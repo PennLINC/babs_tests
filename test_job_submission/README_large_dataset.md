@@ -43,7 +43,13 @@ Without keywords:
 Notes:
 - `qacct -o <username> -j <jobid OR jobname>`
 	- probably use `-j <jobid>` first, if multiple, check the one with matched `<jobname>`
+    - Notes: sometimes Chenying also uses `-u <username>`, but she decided to use `-o` when implementing BABS... hmmm cannot remember the exact reason of doing so...
 - `qacct` field `failed`: not necessarily 100% match, but print the code + text in field `failed` would be helpful
+- In this markdown file, in addition to partial `qacct` printed messages, we've provided some full versions. Please search `Full printed messages` in this markdown file.
+    - This includes:
+        * a failed job, detectable alert message in log file with `qacct` field `failed` of 0;
+        * a failed job, no helpful message in log file, but has informative message from `qacct` field `failed`
+        * a successful job
 
 
 ### Failed due to `No T1w images found`
@@ -91,6 +97,59 @@ exit_status  1
 ...
 category     -U non-deadlineusers -u rbc -l h_stack=256m,h_vmem=16G,tmpfree=200G
 ```
+
+<details>
+<summary>Full printed messages from `qacct`:</summary>
+<br>
+
+```console
+==============================================================
+qname        all.q               
+hostname     2118ffn023.bicic.local
+group        rbc                 
+owner        rbc                 
+project      NONE                
+department   defaultdepartment   
+jobname      fpsub-NDARMG405RZK  
+jobnumber    2221034             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Mon Nov 21 12:01:52 2022
+start_time   Mon Nov 21 12:02:38 2022
+end_time     Mon Nov 21 12:15:54 2022
+granted_pe   NONE                
+slots        1                   
+failed       0    
+exit_status  1                   
+ru_wallclock 796s
+ru_utime     163.949s
+ru_stime     411.320s
+ru_maxrss    315.363KB
+ru_ixrss     0.000B
+ru_ismrss    0.000B
+ru_idrss     0.000B
+ru_isrss     0.000B
+ru_minflt    70991590            
+ru_majflt    238                 
+ru_nswap     0                   
+ru_inblock   54758               
+ru_oublock   11233464            
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     4494414             
+ru_nivcsw    312568              
+cpu          575.269s
+mem          12.712GBs
+io           22.427GB
+iow          0.000s
+maxvmem      820.797MB
+arid         undefined
+ar_sub_time  undefined
+category     -U non-deadlineusers -u rbc -l h_stack=256m,h_vmem=16G,tmpfree=200G
+```
+</details>
 
 ### Failed due to `Cannot allocate memory`:
 Other example job ID in this category:
@@ -387,6 +446,61 @@ category     -U non-deadlineusers -u rbc -l h_stack=256m,h_vmem=90G,tmpfree=200G
 ```
 So this job was probably stuck and running for 4 days, and someone killed it.
 
+<details>
+<summary>Full printed messages from `qacct`:</summary>
+<br>
+
+```console
+$ qacct -j 2243509 -u rbc
+==============================================================
+qname        all.q               
+hostname     2115fmn004.bicic.local
+group        rbc                 
+owner        rbc                 
+project      NONE                
+department   defaultdepartment   
+jobname      fpsub-NDARGL085RTW  
+jobnumber    2243509             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Fri Nov 25 20:43:53 2022
+start_time   Fri Nov 25 21:19:35 2022
+end_time     Wed Nov 30 08:40:20 2022
+granted_pe   NONE                
+slots        1                   
+failed       100 : assumedly after job
+exit_status  137                  (Killed)
+ru_wallclock 386445s
+ru_utime     149.822s
+ru_stime     383.608s
+ru_maxrss    78.484KB
+ru_ixrss     0.000B
+ru_ismrss    0.000B
+ru_idrss     0.000B
+ru_isrss     0.000B
+ru_minflt    70035078            
+ru_majflt    0                   
+ru_nswap     0                   
+ru_inblock   0                   
+ru_oublock   1349472             
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     1898987             
+ru_nivcsw    303039              
+cpu          410729.060s
+mem          835.354TBs
+io           110.176GB
+iow          0.000s
+maxvmem      3.465GB
+arid         undefined
+ar_sub_time  undefined
+category     -U non-deadlineusers -u rbc -l h_stack=256m,h_vmem=90G,tmpfree=200G
+```
+</details>
+
+
 ### Other stalled jobs and got killed due to exceeding `h_rt`:
 - fpsub-NDARJP304NK1.e9639520
 
@@ -405,3 +519,57 @@ So this job was probably stuck and running for 4 days, and someone killed it.
 | :-- | :--: |
 | "git-annex: copy: 1 failed" | in .e |
 | "Exception: No dwi images found for " | in .e |
+
+# Example printed messages from `qacct` of a successful job
+The job in the example below is a successfully finished toy job of toy dataset, not from a large-dataset.
+
+Full printed messages from `qacct`, from a successfully finished job:
+
+```console
+$ qacct -j 4396836 -o babs
+==============================================================
+qname        all.q               
+hostname     2115fmn031.bicic.local
+group        babs                
+owner        babs                
+project      NONE                
+department   defaultdepartment   
+jobname      toy_sub-01_ses-A    
+jobnumber    4396836             
+taskid       undefined
+account      sge                 
+priority     0                   
+qsub_time    Fri Apr  7 18:57:18 2023
+start_time   Fri Apr  7 18:58:17 2023
+end_time     Fri Apr  7 18:59:14 2023
+granted_pe   NONE                
+slots        1                   
+failed       0    
+exit_status  0                   
+ru_wallclock 57s
+ru_utime     16.429s
+ru_stime     7.260s
+ru_maxrss    47.246KB
+ru_ixrss     0.000B
+ru_ismrss    0.000B
+ru_idrss     0.000B
+ru_isrss     0.000B
+ru_minflt    1756616             
+ru_majflt    20                  
+ru_nswap     0                   
+ru_inblock   8512                
+ru_oublock   208224              
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     54911               
+ru_nivcsw    5403                
+cpu          23.689s
+mem          208.054MBs
+io           525.041MB
+iow          0.000s
+maxvmem      124.355MB
+arid         undefined
+ar_sub_time  undefined
+category     -U non-deadlineusers -u babs -l h_stack=256m,h_vmem=2G,tmpfree=20G
+```
