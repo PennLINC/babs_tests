@@ -30,36 +30,46 @@ Purpose:
 ref: [here](https://apptainer.org/docs/user/1.1/environment_and_metadata.html#environment-variable-precedence)
 
 If not to change anything:
-```
+```console
 $ apptainer run toyenv.sif
 Hello
 ```
 
 Set up the same env var on host:
-```
+```console
 $ export MYVAR="Something New!"
 $ echo $MYVAR
 Something New
 ```
 
 If injecting host env var into container:
-```
+```console
 $ apptainer run --env "MYVAR=$MYVAR" toyenv.sif
 Something New
 ```
 
 This should still work with `--cleanenv`:
 (ref: [here](https://apptainer.org/docs/user/1.1/environment_and_metadata.html#environment-variable-precedence))
-```
+```console
 $ apptainer run --cleanenv --env "MYVAR=$MYVAR" toyenv.sif
 Something New
 ```
 
 This also applies to `singularity run`, even if apptainer version was installed for singularity:
-```
+```console
 $ singularity run --cleanenv --env "MYVAR=$MYVAR" toyenv.sif
 Something New
 ```
+
+Try if previous `export SINGULARITYENV_*` still works on new `apptainer`:
+```console
+$ export SINGULARITYENV_MYVAR="Something New"
+$ singularity run --cleanenv toyenv.sif
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+INFO:    Environment variable SINGULARITYENV_MYVAR is set, but APPTAINERENV_MYVAR is preferred
+Something New
+```
+So it's still working, but `APPTAINERENV_*` is preferred
 
 ## Expected `singularity run` for FreeSurfer and TemplateFlow
 Strategy does not change in BABS:
@@ -81,7 +91,7 @@ singularity run --cleanenv -B ${PWD},/test/templateflow_home:/TEMPLATEFLOW_HOME 
 New: use `--env` (which is consistent across old and new version of singularity), instead of `export SINGULARITYENV_*`, as for new version of `singularity`, i.e., `apptainer`, it will use `export APPTAINERENV_*`, i.e., it will be depending on which version of `singularity` installed on the cluster!
 
 ### New option #1: (Chenying proposed):
-```
+```bash
 mkdir -p ${PWD}/.git/tmp/wkdir
 singularity run --cleanenv \
         -B ${PWD},/path/to/TEMPLATEFLOW_HOME:/TEMPLATEFLOW_HOME,/path/to/FREESURFER_HOME:/FREESURFER_HOME \
@@ -98,7 +108,7 @@ Here,
 ### New option #2 (Chenying proposed): just to bind FS and TemplateFlow same folder as in host (not to define the destination folder):
 --> risk:  host's env var path (can vary) overlapped with something in the bids app
 
-```
+```bash
 mkdir -p ${PWD}/.git/tmp/wkdir
 singularity run --cleanenv \
         -B ${PWD},/path/to/TEMPLATEFLOW_HOME,/path/to/FREESURFER_HOME \
@@ -109,13 +119,13 @@ singularity run --cleanenv \
         --fs-license-file /FREESURFER_HOME/license.txt \
 ```
 
-### New option #3 - Matt suggested, adopted in the next release after babs 0.0.2 version
+### New option #3 - Matt suggested; working with freesurfer! But because of my changes it had some flaws for templateflow....
 * `/SGLR/TEMPLATEFLOW_HOME`, to make sure it is not consistent with what's defined in the bids app!
     * `SGLR` means singularity, just some name defined by Matt
 * In addition, we should not (re-)define env variable `--env FREESURFER_HOME`!
   It will conflict with the internal `FREESURFER_HOME` within the container!
 
-```
+```bash
 mkdir -p ${PWD}/.git/tmp/wkdir
 singularity run --cleanenv \
 	-B ${PWD} \
@@ -134,6 +144,26 @@ Notes:
 * Not to include FreeSurfer's stuff as env var in the container
 * For `--fs-license-file`, we should use an explicit path
 
+#### Flaw:
+Somehow, if using `--env TEMPLATEFLOW_HOME=/SGLR/TEMPLATEFLOW_HOME`, and the host's `$TEMPLATEFLOW_HOME` is empty without downloaded templates, there will be an error from fMRIPrep after several hours (at registratration step): 
 
+```bash
+FileNotFoundError: [Errno 2] No such file or directory: '/SGLR/TEMPLATEFLOW_HOME/tpl-MNI152NLin6Asym/tpl-MNI152NLin6Asym_res-02_T1w.nii.gz'
+```
 
 How to test `templateflow`? fmriprep with `--output-spaces` specified will use `templateflow`
+
+### New option #4 - really working version:
+
+Finally, i changed back to `export SINGULARITYENV_*`:
+
+```bash
+export SINGULARITYENV_TEMPLATEFLOW_HOME=/SGLR/TEMPLATEFLOW_HOME
+singularity run --cleanenv \
+    -B ${PWD} \
+    -B /cbica/projects/BABS/data/templateflow_home_4test:/SGLR/TEMPLATEFLOW_HOME 
+    -B /cbica/projects/BABS/software/FreeSurfer/license.txt:/SGLR/FREESURFER_HOME/license.txt \
+    containers/.datalad/environments/fmriprep-20-2-3/image \
+    ...
+    --fs-license-file /SGLR/FREESURFER_HOME/license.txt \
+```
