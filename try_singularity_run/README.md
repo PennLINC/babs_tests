@@ -61,7 +61,8 @@ $ singularity run --cleanenv --env "MYVAR=$MYVAR" toyenv.sif
 Something New
 ```
 
-Try if previous `export SINGULARITYENV_*` still works on new `apptainer`:
+Actually, previous `export SINGULARITYENV_*` still works on new `apptainer`:
+(version used here: `apptainer version 1.1.7-1.el7`)
 ```console
 $ export SINGULARITYENV_MYVAR="Something New"
 $ singularity run --cleanenv toyenv.sif
@@ -69,7 +70,7 @@ INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is
 INFO:    Environment variable SINGULARITYENV_MYVAR is set, but APPTAINERENV_MYVAR is preferred
 Something New
 ```
-So it's still working, but `APPTAINERENV_*` is preferred
+So it's still working, just `APPTAINERENV_*` is preferred.
 
 ## Expected `singularity run` for FreeSurfer and TemplateFlow
 Strategy does not change in BABS:
@@ -119,7 +120,7 @@ singularity run --cleanenv \
         --fs-license-file /FREESURFER_HOME/license.txt \
 ```
 
-### New option #3 - Matt suggested; working with freesurfer! But because of my changes it had some flaws for templateflow....
+### New option #3 - Matt suggested; will be included in BABS in the next release (0.0.3 or +)
 * `/SGLR/TEMPLATEFLOW_HOME`, to make sure it is not consistent with what's defined in the bids app!
     * `SGLR` means singularity, just some name defined by Matt
 * In addition, we should not (re-)define env variable `--env FREESURFER_HOME`!
@@ -144,18 +145,14 @@ Notes:
 * Not to include FreeSurfer's stuff as env var in the container
 * For `--fs-license-file`, we should use an explicit path
 
-#### Flaw:
-Somehow, if using `--env TEMPLATEFLOW_HOME=/SGLR/TEMPLATEFLOW_HOME`, and the host's `$TEMPLATEFLOW_HOME` is empty without downloaded templates, there will be an error from fMRIPrep after several hours (at registratration step): 
-
-```bash
-FileNotFoundError: [Errno 2] No such file or directory: '/SGLR/TEMPLATEFLOW_HOME/tpl-MNI152NLin6Asym/tpl-MNI152NLin6Asym_res-02_T1w.nii.gz'
-```
-
 How to test `templateflow`? fmriprep with `--output-spaces` specified will use `templateflow`
+I've tested that this version leads to successsful templates download.
 
-### New option #4 - really working version:
+The case that regarding no file found: probably because i deleted existing templates before the fmriprep job finishes...
 
-Finally, i changed back to `export SINGULARITYENV_*`:
+### New option #4 - this is also working
+
+Instead of `--env`, you can also use `export SINGULARITYENV_*` even if the singularity is `apptainer` version - you'll just receive a warning saying `APPTAINERENV_*` is preferred
 
 ```bash
 export SINGULARITYENV_TEMPLATEFLOW_HOME=/SGLR/TEMPLATEFLOW_HOME
@@ -167,3 +164,4 @@ singularity run --cleanenv \
     ...
     --fs-license-file /SGLR/FREESURFER_HOME/license.txt \
 ```
+I've tested that this version also leads to successsful templates download.
