@@ -29,6 +29,8 @@ docker build -t pennlinc/babs_tests:${docker_tag} -f Dockerfile_babs_tests \
 
 # test:
 # docker run --rm -ti pennlinc/babs_tests:${docker_tag}
+# # to check `git-annex version`, datalad, git and other packages (see above) versions;
+# # to check: `ls singularity_images` to see the version of toybidsapp is the one you want; 
 
 # push:
 # docker push pennlinc/babs_tests:${docker_tag}
