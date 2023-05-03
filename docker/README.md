@@ -6,6 +6,9 @@ Available at [`pennlinc` Docker Hub](https://hub.docker.com/r/pennlinc/babs_test
 * Dockerfile: [Dockerfile_babs_tests](Dockerfile_babs_tests)
 
 ### Tag logs
+* `datalad0.17.2_v5`: copied pre-built `toybidsapp_0.0.7.sif` into the docker image
+    * Others are the same with the last veresion
+
 * `datalad0.17.2_v4`: copied pre-built `toybidsapp_0.0.6.sif` into the docker image
     * The sif file was prebuilt on CUBIC cluster, and saved in folder `/cbica/projects/BABS/toybidsapp_for_babs_tests`
     * The sif file was built using command below:

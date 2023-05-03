@@ -80,4 +80,4 @@ RUN git config --global user.name "Test Name"
 # Copy the pre-built toybidsapp sif file into this docker image:
 WORKDIR /
 RUN mkdir singularity_images
-COPY toybidsapp_0.0.6.sif /singularity_images/
+COPY toybidsapp_0.0.7.sif /singularity_images/
