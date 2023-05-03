@@ -11,6 +11,28 @@ pip -q install -e .   # quietly install BABS
     1. reset that job's line in `job_status.csv`
 * check if `job_status.csv` reflects the scenario you want.
 
+## Testing `alert_log_messages`:
+Using `toybidsapp`, kill the running job --> get a failed job.
+
+Example `alert_log_messages` to manipulate:
+```
+alert_log_messages:
+    # some_other:  # Only used for testing purpose!
+    stdout:
+        - "xxxx"
+        # - "I am running BABS."
+        # - "did not provide --session_label"
+    stderr:
+        - "xxx"
+        # - "[INFO] Attempting to clone"
+        # - "[INFO] Cloning dataset"
+        # - "git remote add outputstore"
+```
+e.g., just to copy some "normal" messages from the log file to see
+if BABS can detect them.
+
+Another case: just as above example, without detected alert message, then expect that `--job-account` will be helpful.
+
 ## SGE
 ### Simple tests
 * simple test: `qsub test.sh 5`  # sleep for 5 sec
