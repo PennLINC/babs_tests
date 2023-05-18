@@ -26,9 +26,11 @@ zip_foldernames:
 cluster_resources:
     interpreting_shell: /bin/bash -l   # Slurm: better to add `-l`
     hard_memory_limit: 2G
-    temporary_disk_space: 20G
     customized_text: |
         #SBATCH --nodes=1
+        #SBATCH --ntasks-per-node=1
+        #SBATCH --tmp=20G
+# temporary_disk_space: 20G
 # Notes: Above `customized_text` is MSI Slurm cluster specific.
 #   So it may not be relevant for other clusters
 # Full list:
