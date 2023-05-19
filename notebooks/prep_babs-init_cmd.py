@@ -5,30 +5,32 @@ import os.path as op
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++
 flag_instance = "toybidsapp"   # "fmriprep_anatonly" or "toybidsapp" (for testing only)
-flag_where = "msi"    # "cubic" or "local"
+flag_where = "msi"    # "msi"
+type_session = "multi-ses"
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-type_session = "single-ses"
+# system type:
+if flag_where == "msi":
+    type_system = "slurm"
+else:
+    type_system = "sge"
 
 if flag_instance == "toybidsapp":
-    project_name = "test_showcase_HBN_toybidsapp"
+    project_name = "test_babs_" + type_session + "_" + flag_instance
     bidsapp = "toybidsapp"
     container_name = "toybidsapp-0-0-7"
     config_yaml_filename = "bidsapp-toybidsapp-0-0-7_task-rawBIDS_system-slurm_cluster-MSI_egConfig.yaml"
 
-if flag_where == "cubic":
-    where_root = "/cbica/projects/BABS/"
-    where_project = op.join(where_root, "babs_showcase")
-    input_ds = "/cbica/projects/BABS/babs_showcase/HBN_BIDS"   # path to the input dataset
+if flag_where == "msi":
+    where_root = "/home/faird/zhaoc"
+    where_project = "/home/faird/zhaoc/data"
+    if type_session == "single-ses":
+        input_ds = "https://osf.io/t8urc/"
+    elif type_session == "multi-ses":
+        input_ds = "https://osf.io/w2nu3/"
+
     container_ds = op.join(where_project, bidsapp + "-container")
-    container_config_yaml_file = op.join(where_root, "babs_paper", config_yaml_filename)
-elif flag_where == "local":
-    where_root = "/Users/chenyzh/Desktop/Research/Satterthwaite_Lab/datalad_wrapper"
-    where_project = op.join(where_root, "data")
-    # use toy data and toy container for testing only:
-    input_ds = op.join(where_project, "w2nu3")
-    container_ds = op.join(where_project, "toybidsapp-container-docker")
-    container_config_yaml_file = op.join(where_root, "babs_paper", config_yaml_filename)
+    container_config_yaml_file = op.join(where_root, "babs_tests/notebooks", config_yaml_filename)
 
 list_sub_file = None   # no pre-defined subject list file
 
@@ -42,6 +44,6 @@ cmd += "\t" + "--container_ds " + container_ds + " \\\n"
 cmd += "\t" + "--container_name " + container_name + " \\\n"
 cmd += "\t" + "--container_config_yaml_file " + container_config_yaml_file + " \\\n"
 cmd += "\t" + "--type_session " + type_session + " \\\n"
-cmd += "\t" + "--type_system " + "sge"
+cmd += "\t" + "--type_system " + type_system
 
 print(cmd)

@@ -1,0 +1,2 @@
+cmd_template: 'sbatch --export=DSLOCKFILE=/home/faird/zhaoc/data/test_babs_multi-ses_toybidsapp/analysis/.SLURM_datalad_lock --job-name toy_test_job -e /home/faird/zhaoc/data/test_babs_multi-ses_toybidsapp/analysis/logs/toy_test_job.e%A -o /home/faird/zhaoc/data/test_babs_multi-ses_toybidsapp/analysis/logs/toy_test_job.o%A  /home/faird/zhaoc/data/test_babs_multi-ses_toybidsapp/analysis/code/check_setup/call_test_job.sh'
+job_name_template: 'toy_test_job'
