@@ -35,16 +35,6 @@ cluster_resources:
 # interpreting_shell: /bin/bash -l   # Slurm: better to add `-l`    # needs fix in `interpreting_shell` - issue #94
 # Notes: Above `customized_text` is MSI Slurm cluster specific.
 #   So it may not be relevant for other clusters
-# Full list:
-#SBATCH -J abcd_qsiprep
-#SBATCH --nodes=1
-#SBATCH --mail-user=scovitz@umn.edu
-#SBATCH --mem=50g
-#SBATCH --tmp=40g
-#SBATCH -p k40
-#SBATCH -o logs/job-%j.out
-#SBATCH -e logs/job-%j.err
-#SBATCH -t 24:00:00
 
 
 # Users need to add their customized bash command below,
