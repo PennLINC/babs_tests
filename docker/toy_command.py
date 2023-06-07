@@ -7,8 +7,8 @@
 
 """
 This is to count non-hidden files for:
-- either a BIDS dataset (`--zipped`), # of files in a subject (or session) 's directory
-- or zipped BIDS-derivative dataset (`--no-zipped`), # of files in a subject (or session)'s zip file
+- either a BIDS dataset (`--no-zipped`), # of files in a subject (or session) 's directory
+- or zipped BIDS-derivative dataset (`--zipped`), # of files in a subject (or session)'s zip file
 
 Results:
 ----------
