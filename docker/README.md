@@ -8,13 +8,18 @@ There are two Docker images used for testing BABS:
 * Where is the Docker image: Available at [`pennlinc` Docker Hub](https://hub.docker.com/r/pennlinc/toy_bids_app).
 * What it does: to count number of non-hidden files in a subject's directory (or a session's directory).
     * Please see below [Detailed explanations](#detailed-explanations) for more.
-* How to call it: see `--help`
-* What platform: Its Docker image can be run on both amd64 (Linux + probably Mac with Intel chip) and arm64 (Mac with M1 chip)
+* How to call it: run `--help`. For example, if you run `docker run` on local computer:
+    ```
+    docker run --rm -it pennlinc/toy_bids_app:<version_tag> --help
+    ```
+  and replace `<version_tag>` with the version you'd like to use, e.g., `0.0.7`. It's encouraged to use the latest tagged version available on Docker Hub.
+* What platform: Its Docker image can be run on both amd64 (e.g., Linux) and arm64 (Mac with M1 chip)
+    *  Mac with Intel chip is probably also fine, but it was not tested.
 
 ### Detailed explanations
 When using toy BIDS App *together with BABS*, toy BIDS App may behave differently from what you thought. For example, as BABS won't handle `--session-label` flag of toy BIDS App, for raw BIDS dataset, even when it's a multi-session dataset, toy BIDS App counts at subject level (instead of session-level).
 
-The table below shows the level at which toy BIDS App would count non-hidden files:
+The table below shows the level at which toy BIDS App would count non-hidden files, when using *together with BABS*:
 
 | Case for toy BIDS App | single-session dataset | multi-session dataset |
 | :-- | :-- | :-- |
