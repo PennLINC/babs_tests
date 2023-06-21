@@ -83,6 +83,7 @@ Others datasets on OSF:
 
 Notes:
 * !!: datalad dataset was created without `-c text2git`, so there might be issue when `datalad get` the data!
+    * ^^ Above note was added after I added `-c text2git` back in the script. However, above note is probably not up-to-date - it seems I used `-c text2git` in the end: it seems text files e.g., in `w2nu3` are managed by `git` instead of `git-annex` (e.g., when `git-annex fsck sub-01_ses-A_T1w.json`, there is no `fsck <filename> ok`), and I can directly see the content without `datalad get`.
 * How to clone: `datalad clone https://osf.io/<id>/ <local_foldername>`
     * make sure you are in a conda env that has datalad-osf installed
     * and, make sure you also set up `datalad osf-credentials` (please provide osf token when asked)
