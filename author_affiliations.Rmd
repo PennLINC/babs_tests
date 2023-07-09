@@ -1,0 +1,76 @@
+---
+title: "Generator of author list and affiliations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+rm(list=ls())
+
+library(readxl)
+library(dplyr)    # %>%
+library(testthat)
+```
+
+```{r inputs}
+# ++++++++++++++++++++++++++++++++++++++++++++++++
+folder <- "/Users/chenyzh/Library/CloudStorage/OneDrive-PennO365/Research/SatterthwaiteLab/babs/paper"
+n_authors <- 19
+n_non_affi_col <- 3   # number of columns that are not affiliations
+
+fn_xlsx <- file.path(folder, "submission_BABS.xlsx")
+# ++++++++++++++++++++++++++++++++++++++++++++++++
+```
+
+```{r process information}
+t <- read_excel(fn_xlsx, sheet = "affiliations")
+expect_equal(nrow(t), n_authors)
+
+# extract the list of affiliations:
+colnames_all <- colnames(t)
+# remove first 3 elements: c("Index", "Name", "Institute_primary")
+list_affi <- colnames_all[-(1:n_non_affi_col)]
+
+# index of affi:
+t_affi <- data.frame(affi = list_affi)
+t_affi['index_affi'] <- letters[1:length(list_affi)]
+
+# Result table:
+t_results <- data.frame(author = t[["Name"]])
+t_results['affi'] <- NA
+
+for (i in 1:n_authors) {
+  txt <- ""
+  flag_author <- FALSE    # whether an affi has been assigned to this author
+
+  for (j in (1+n_non_affi_col):ncol(t)) {   # for each of affiliations
+    if (is.na(t[i,j])) {
+      # do nothing
+    } else if (t[i,j] == "x") {
+      # found an affi:
+      j_affi <- j - n_non_affi_col
+      # the index of affi:
+      the_index_affi <- t_affi[j_affi, "index_affi"]
+      
+      # add to author's affi list:
+      if (flag_author == FALSE) {
+        flag_author <- TRUE
+      } else {
+        txt <- paste0(txt, ",")   # add a comma
+      }
+      txt <- paste0(txt, the_index_affi)
+
+    } else {
+      stop(paste("This element is not acceptable: ", t[i,j]))
+    }
+  
+  }
+  
+  t_results[['affi']][i] <- txt
+}
+
+```
+
+```{r view results}
+t_results
+t_affi
+```

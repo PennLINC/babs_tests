@@ -1,3 +1,4 @@
 .vscode/*
 docker/*.sif
 try_singularity_run/*.sif
+.Rproj.user
