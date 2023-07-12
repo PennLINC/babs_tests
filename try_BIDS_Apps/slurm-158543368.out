@@ -1,0 +1,15 @@
+++ date +%Y%m%d_%H%M%S
++ the_date=20230711_155816
++ echo 'date: 20230711_155816'
+date: 20230711_155816
++ folder_main_data=/home/faird/zhaoc/data
++ filename_sif=toybidsapp-0.0.7.sif
++ fn_sif=/home/faird/zhaoc/data/toybidsapp-0.0.7.sif
++ folder_input_dataset=/home/faird/zhaoc/data/plain_data/HBN_BIDS_plain
++ sub_id=sub-NDARHL238VL2
++ ses_id=ses-HBNsiteSI
++ folder_input_subject=/home/faird/zhaoc/data/plain_data/HBN_BIDS_plain/sub-NDARHL238VL2/ses-HBNsiteSI
++ folder_main_output=/home/faird/zhaoc/data/toybidsapp_HBN
++ folder_output=/home/faird/zhaoc/data/toybidsapp_HBN/output_sub-NDARHL238VL2
++ mkdir /home/faird/zhaoc/data/toybidsapp_HBN/output_sub-NDARHL238VL2
+mkdir: cannot create directory ‘/home/faird/zhaoc/data/toybidsapp_HBN/output_sub-NDARHL238VL2’: No such file or directory

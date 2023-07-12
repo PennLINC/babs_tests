@@ -3,3 +3,4 @@ docker/*.sif
 try_singularity_run/*.sif
 .Rproj.user
 .Rhistory
+try_BIDS_Apps/logs/*
