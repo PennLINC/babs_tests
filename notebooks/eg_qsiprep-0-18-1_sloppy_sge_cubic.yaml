@@ -18,7 +18,7 @@
 singularity_run:
     -v: "-v"
     -w: "$BABS_TMPDIR"   # this is a placeholder. To be changed to `${PWD}/.git/tmp/wkdir`
-    --n_cpus: "$NSLOTS"   # `$NSLOTS` can be recognized by SGE
+    --n_cpus: "2"   # For SGE clusters: you can use "$NSLOTS" here if `number_of_cpus` is set
     --omp-nthreads: "3"   # without this, only run single-threaded jobs (N=`--n_cpus`) at once
     --stop-on-first-crash: ""
     --fs-license-file: "/cbica/projects/BABS/software/FreeSurfer/license.txt"  # [FIX ME] path to FS license file
@@ -33,9 +33,9 @@ zip_foldernames:
 
 cluster_resources:
     interpreting_shell: /bin/bash
-    hard_memory_limit: 32G
+    hard_memory_limit: 100G
     temporary_disk_space: 200G
-    number_of_cpus: "6"
+    number_of_cpus: "2"
     customized_text: |
         #$ -R y
         #$ -l hostname=!compute-fed*
