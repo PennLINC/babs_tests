@@ -1,3 +1,20 @@
+# This is an example config yaml file for:
+#   BIDS App:         toy BIDS App ("toy_bids_app")
+#   BIDS App version: 0.0.7
+#   Task:             for raw BIDS dataset ("unzipped"), specifically for example walkthrough
+#   Which system:     Slurm
+#   Tested on which cluster:  MSI cluster
+# Toy BIDS App's Docker image is publicly available at: https://hub.docker.com/r/pennlinc/toy_bids_app
+# This BIDS App counts number of non-hidden files in a subject's (or a session's) folder;
+#     More details please see: https://github.com/PennLINC/babs_tests/blob/main/docker/README.md#toy-bids-app-toy_bids_app
+# How to prepare a container DataLad dataset of this toy BIDS App? See docs here: https://pennlinc-babs.readthedocs.io/en/latest/preparation_container.html
+
+# Warning!!!
+#   This is only an example, which may not necessarily fit your purpose,
+#   or be an optimized solution for your case,
+#   or be compatible to the BIDS App version you're using.
+#   Therefore, please change and tailor it for your case before use it!!!
+
 # Arguments in `singularity run`:
 singularity_run:
     --no-zipped: ""
@@ -16,6 +33,8 @@ cluster_resources:
     temporary_disk_space: 20G
     customized_text: |
         #SBATCH -p ram256g
+# Notes: Above `customized_text` is MSI Slurm cluster specific.
+#   So it may not be relevant for other clusters
 
 # Necessary commands to be run first:
 script_preamble: |

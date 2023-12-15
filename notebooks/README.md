@@ -15,6 +15,8 @@
 | :-- | :--|:-- | :-- |:-- | :-- | :-- |
 | [link](eg_toybidsapp-0-0-7_rawBIDS_sge_cubic.yaml) | toy BIDS App | 0.0.7 |for processing raw BIDS dataset | one raw BIDS dataset | SGE | |
 | [link](eg_toybidsapp-0-0-7_rawBIDS_slurm_msi.yaml) | toy BIDS App | 0.0.7 |for processing raw BIDS dataset | one raw BIDS dataset | Slurm | |
+| - | toy BIDS App | 0.0.7 |for processing raw BIDS dataset, example walkthrough | one raw BIDS dataset | SGE | This YAML file can be found in BABS docs - example walkthrough |
+| [link](eg_toybidsapp-0-0-7_rawBIDS-walkthrough_slurm_msi.yaml) | toy BIDS App | 0.0.7 |for processing raw BIDS dataset, example walkthrough | one raw BIDS dataset | Slurm | |
 | [link](eg_toybidsapp-0-0-7_zipped_sge_cubic.yaml) | toy BIDS App | 0.0.7 |for processing zipped BIDS derivatives dataset | one zipped BIDS derivatives dataset | SGE | |
 | [link](eg_toybidsapp-0-0-7_zipped_slurm_msi.yaml) | toy BIDS App | 0.0.7 |for processing zipped BIDS derivatives dataset | one zipped BIDS derivatives dataset | Slurm | |
 | [link](eg_fmriprep-20-2-3_full_sge_cubic.yaml) | fMRIPrep | 20.2.3 | Full run of fMRIPrep | one raw BIDS dataset | SGE | |
